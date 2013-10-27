@@ -19,6 +19,7 @@ defmodule Funnel.Mixfile do
 
   defp deps do
     [ { :cowboy, github: "extend/cowboy" },
+      { :exjson, git: "https://github.com/guedes/exjson.git" },
       { :dynamo, "0.1.0-dev", github: "elixir-lang/dynamo" } ]
   end
 end
