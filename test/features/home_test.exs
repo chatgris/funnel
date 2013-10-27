@@ -8,4 +8,9 @@ defmodule HomeTest do
     conn = get("/")
     assert conn.status == 200
   end
+
+  test "returns json" do
+    conn = get("/")
+    assert conn.resp_headers["Content-Type"] == "application/json"
+  end
 end
