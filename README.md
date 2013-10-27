@@ -1,6 +1,6 @@
 # Funnel
 
-## installing things
+## Installing things
 
 First, Elixir must be installed, check out the resources section.
 
