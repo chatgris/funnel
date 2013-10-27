@@ -1,8 +1,14 @@
 # Funnel
 
-This is a project built with Elixir that uses Dynamo to serve web requests.
+## Installation
 
-Resources:
+First, Elixir must be installed, check out the resources section.
+
+``` shell
+make install
+```
+
+## Resources
 
 * [Elixir website](http://elixir-lang.org/)
 * [Elixir getting started guide](http://elixir-lang.org/getting_started/1.html)
