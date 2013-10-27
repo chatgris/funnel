@@ -14,6 +14,12 @@ make install
 iex -S mix server
 ```
 
+## Testing things
+
+``` shell
+mix test
+```
+
 ## Resources
 
 * [Elixir website](http://elixir-lang.org/)
