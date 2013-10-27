@@ -1,11 +1,17 @@
 # Funnel
 
-## Installation
+## installing things
 
 First, Elixir must be installed, check out the resources section.
 
 ``` shell
 make install
+```
+
+## Running things
+
+``` shell
+iex -S mix server
 ```
 
 ## Resources
