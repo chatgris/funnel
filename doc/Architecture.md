@@ -4,28 +4,28 @@ funnel is meant to receive content and notify when relevant new content is
 available.
 
 
-  /-----------\   /-----------\
-  |  Source1  |   | Source 2  |
-  \-----------/   \-----------/
-         |              |
-         :              :
-         :              :
-         V              V
-     /-----------------------\      /-----------------\
-     |                       |<---->|{s}              |
-     |         funnel        |      |  ElasticSearch  |
-     |                       |      |                 |
-     \-----------------------/      \-----------------/
-                :   :
-                :   :
-                V   V
-     /------------+-----------\
-     | Consumer   | Consumer  |
-     \------------+-----------/
+    /-----------\   /-----------\
+    |  Source1  |   | Source 2  |
+    \-----------/   \-----------/
+           |              |
+           :              :
+           :              :
+           V              V
+       /-----------------------\      /-----------------\
+       |                       |<---->|{s}              |
+       |         funnel        |      |  ElasticSearch  |
+       |                       |      |                 |
+       \-----------------------/      \-----------------/
+                  :   :
+                  :   :
+                  V   V
+       /------------+-----------\
+       | Consumer   | Consumer  |
+       \------------+-----------/
 
 ## API
 
-funnel exposes a json API to communicate the the world.
+funnel exposes a json API to communicate with the world.
 
 
 ### Adding messages
@@ -55,11 +55,11 @@ elasticsearch query.
 ### Stream
 
 Listening to a stream is done by using the `/river` endpoint.
-Message from this endpoint has the same serialization as the message sended to
+Message from this endpoint has the same serialization as the message sent to
 `/feeding`, with one addition: an entry filter containing the filter's name.
 River will send messages from all filters associated to the user/token.
 
-Rivers uses Server-sent events to maintain a open connexion.
+Rivers uses Server-sent events to maintain an open connection.
 
 
 ## Common workflow
@@ -84,7 +84,7 @@ Rivers uses Server-sent events to maintain a open connexion.
 
 ### Messages
 
-Message are not persisted by funnel. Period.
+Messages are not persisted by funnel. Period.
 
 River does have a local cache to support `last-event-id` from Server-sent
 events.
