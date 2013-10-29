@@ -31,24 +31,24 @@ funnel exposes a json API to communicate with the world.
 ### Adding messages
 
 Adding messages is done by using the `/feeding` endpoint. The payload must
-comply with the funnel's message serialization. This entries can accept a single
+comply with the funnel's message serialization. These entries can accept a single
 message, or a list of message.
 
 
 ### Register
 
 A user, or a device, can register to funnel by using the `/ohai` endpoint.
-This will returns a token. This token must be used in all communication with the
+This will return a token. This token must be used in all communications with the
 funnel's API.
 
 
 ### Adding filters
 
 Adding filters is done by using the `/filter` endpoint. The payload must
-comply with the funnel's filter serialization. This entries can accept a single
+comply with the funnel's filter serialization. These entries can accept a single
 filter, or a list of filters.
 
-A filter is defined by a user's token, a name, and a json representing the
+A filter is defined by a user's token, a name, and a json string representing the
 elasticsearch query.
 
 
@@ -94,5 +94,5 @@ Although, a webservice could register on funnel, and persist relevant messages.
 
 ### Filters
 
-For now, directly into Elasticseach. Not really its job, but, it will allow to
-have only one dependency.
+For now, directly into Elasticseach. Not really its job, but will allow to only
+have one dependency.
