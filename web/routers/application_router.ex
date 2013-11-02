@@ -14,6 +14,7 @@ defmodule ApplicationRouter do
 
   get "/" do
     conn = conn.put_resp_header "Content-Type", "application/json"
-    conn.resp 200, JSON.generate [message: "Welcome to funnel"]
+    {:ok, payload} = JSEX.encode [message: "Welcome to funnel"]
+    conn.resp 200, payload
   end
 end
