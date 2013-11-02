@@ -61,6 +61,10 @@ River will send messages from all filters associated to the user/token.
 
 Rivers uses Server-sent events to maintain an open connection.
 
+### Monitoring
+
+Funnel can be monitored on `/status`. Each resquest on this endpoint does a
+request on ElasticSearch root.
 
 ## Common workflow
 
