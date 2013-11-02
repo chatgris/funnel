@@ -12,6 +12,8 @@ defmodule ApplicationRouter do
   # routers, forwarding the requests between them:
   # forward "/posts", to: PostsRouter
 
+  forward "/status", to: StatusRouter
+
   get "/" do
     conn = conn.put_resp_header "Content-Type", "application/json"
     {:ok, payload} = JSEX.encode [message: "Welcome to funnel"]
