@@ -1,5 +1,9 @@
 # Funnel
 
+/!\ This is very early stage software.
+
+[What's funnel aims to be](https://github.com/AF83/funnel/blob/master/doc/Architecture.md).
+
 ## Installing things
 
 First, Elixir must be installed, check out the resources section.
