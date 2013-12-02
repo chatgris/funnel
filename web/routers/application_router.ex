@@ -14,6 +14,8 @@ defmodule ApplicationRouter do
 
   forward "/status", to: StatusRouter
 
+  forward "/ohai",   to: OhaiRouter
+
   get "/" do
     conn = conn.put_resp_header "Content-Type", "application/json"
     {:ok, payload} = JSEX.encode [message: "Welcome to funnel"]
