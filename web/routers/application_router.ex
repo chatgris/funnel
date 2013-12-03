@@ -5,7 +5,7 @@ defmodule ApplicationRouter do
     # Pick which parts of the request you want to fetch
     # You can comment the line below if you don't need
     # any of them or move them to a forwarded router
-    conn.fetch([:cookies, :params])
+    conn.fetch([:cookies, :params, :body])
   end
 
   # It is common to break your Dynamo into many
@@ -15,6 +15,8 @@ defmodule ApplicationRouter do
   forward "/status", to: StatusRouter
 
   forward "/ohai",   to: OhaiRouter
+
+  forward "/filter", to: FilterRouter
 
   get "/" do
     conn = conn.put_resp_header "Content-Type", "application/json"
