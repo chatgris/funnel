@@ -1,5 +1,5 @@
 defmodule StatusRouterTest do
-  use Funnel.TestCase
+  use Funnel.TestCase, async: true
   use Dynamo.HTTP.Case
 
   @endpoint StatusRouter
