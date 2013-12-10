@@ -11,11 +11,11 @@ defmodule Funnel.Es do
   end
 
   def percolate(body) do
-    uuid = Funnel.Uuid.generate
-    percolation = put("/_percolator/funnel/#{uuid}", body)
-    {:ok, body} = JSEX.decode(percolation.body)
-    {:ok, response} = JSEX.encode([query_id: uuid, body: body])
-    {percolation.status_code, response}
+    do_percolate(Funnel.Uuid.generate, body)
+  end
+
+  def percolate(uuid, body) do
+    do_percolate(uuid, body)
   end
 
   def unpercolate do
@@ -24,5 +24,12 @@ defmodule Funnel.Es do
 
   def unpercolate(id) do
     delete("/_percolator/funnel/#{id}")
+  end
+
+  defp do_percolate(uuid, body) do
+    percolation = put("/_percolator/funnel/#{uuid}", body)
+    {:ok, body} = JSEX.decode(percolation.body)
+    {:ok, response} = JSEX.encode([query_id: uuid, body: body])
+    {percolation.status_code, response}
   end
 end
