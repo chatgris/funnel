@@ -29,7 +29,7 @@ defmodule Funnel.Es do
   defp do_percolate(uuid, body) do
     percolation = put("/_percolator/funnel/#{uuid}", body)
     {:ok, body} = JSEX.decode(percolation.body)
-    {:ok, response} = JSEX.encode([query_id: uuid, body: body])
+    {:ok, response} = JSEX.encode([filter_id: uuid, body: body])
     {percolation.status_code, response}
   end
 end

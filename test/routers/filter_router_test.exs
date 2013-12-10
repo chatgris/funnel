@@ -32,7 +32,7 @@ defmodule FilterRouterTest do
     conn = post(conn, "/")
     assert conn.status == 201
     {:ok, body} = JSEX.decode conn.resp_body
-    uuid = body["query_id"]
+    uuid = body["filter_id"]
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
     conn = conn(:PUT, uuid, body)
     conn = put(conn, uuid)
@@ -46,11 +46,11 @@ defmodule FilterRouterTest do
     assert conn.resp_headers["Content-Type"] == "application/json"
   end
 
-  test "returns a query_id" do
+  test "returns a filter_id" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     conn = conn(:POST, "/", body)
     conn = post(conn, "/")
     {:ok, body} = JSEX.decode conn.resp_body
-    assert size(body["query_id"]) == 36
+    assert size(body["filter_id"]) == 36
   end
 end
