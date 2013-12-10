@@ -1,6 +1,5 @@
 defmodule Funnel.EsTest do
-  use ExUnit.Case, async: true
-  use Funnel.TestCase
+  use Funnel.TestCase, async: true
 
   test "Returns Elasticsearc status" do
     response = Funnel.Es.get("/")

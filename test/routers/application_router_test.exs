@@ -1,5 +1,5 @@
 defmodule ApplicationRouterTest do
-  use Funnel.TestCase
+  use Funnel.TestCase, async: true
   use Dynamo.HTTP.Case
 
   # Sometimes it may be convenient to test a specific

@@ -1,5 +1,5 @@
 defmodule EsTest do
-  use Funnel.TestCase
+  use Funnel.TestCase, async: true
 
   test "returns a 201 on query creation" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
