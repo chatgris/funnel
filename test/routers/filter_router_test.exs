@@ -22,7 +22,7 @@ defmodule FilterRouterTest do
     assert conn.resp_headers["Content-Type"] == "application/json"
   end
 
-  test "returns 201" do
+  test "create a filter" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     conn = conn(:POST, "/")
     conn = conn.put_req_header "Content-Type", "application/json"
@@ -33,7 +33,7 @@ defmodule FilterRouterTest do
     Funnel.Es.unpercolate(uuid)
   end
 
-  test "returns 200" do
+  test "update a filter" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     conn = conn(:POST, "/")
     conn = conn.put_req_header "Content-Type", "application/json"
