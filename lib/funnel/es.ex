@@ -23,7 +23,7 @@ defmodule Funnel.Es do
   end
 
   def unpercolate(id) do
-    IO.inspect delete("/_percolator/funnel_#{Mix.env}/#{id}")
+    delete("/_percolator/funnel_#{Mix.env}/#{id}")
   end
 
   defp do_percolate(uuid, body) do
