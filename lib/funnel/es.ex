@@ -19,11 +19,16 @@ defmodule Funnel.Es do
   end
 
   def unpercolate do
-    delete("/_percolator/funnel")
+    do_unpercolate("/_percolator/funnel")
   end
 
   def unpercolate(id) do
-    delete("/_percolator/funnel_#{Mix.env}/#{id}")
+    do_unpercolate("/_percolator/funnel_#{Mix.env}/#{id}")
+  end
+
+  defp do_unpercolate(path) do
+    del = delete path
+    {del.status_code, del.body}
   end
 
   defp do_percolate(uuid, body) do
