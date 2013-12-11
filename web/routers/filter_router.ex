@@ -1,9 +1,7 @@
 defmodule FilterRouter do
   use Dynamo.Router
-
   filter JsonHeader
-
-  prepare do: conn.fetch([:body, :params])
+  filter TokenFilter
 
   post "/" do
     {status_code, response} = Funnel.Es.percolate conn.req_body
