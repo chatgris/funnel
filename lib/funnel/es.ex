@@ -23,11 +23,11 @@ defmodule Funnel.Es do
   end
 
   def unpercolate(id) do
-    delete("/_percolator/funnel/#{id}")
+    IO.inspect delete("/_percolator/funnel_#{Mix.env}/#{id}")
   end
 
   defp do_percolate(uuid, body) do
-    percolation = put("/_percolator/funnel/#{uuid}", body)
+    percolation = put("/_percolator/funnel_#{Mix.env}/#{uuid}", body)
     {:ok, body} = JSEX.decode(percolation.body)
     {:ok, response} = JSEX.encode([filter_id: uuid, body: body])
     {percolation.status_code, response}
