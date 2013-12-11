@@ -24,24 +24,24 @@ defmodule FilterRouterTest do
 
   test "returns 201" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/", body)
+    conn = conn(:POST, "/")
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/")
+    conn = post(conn, "/", body)
     assert conn.status == 201
   end
 
   test "returns 200" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/", body)
+    conn = conn(:POST, "/")
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/")
+    conn = post(conn, "/", body)
     assert conn.status == 201
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
-    conn = conn(:PUT, uuid, body)
+    conn = conn(:PUT, uuid)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = put(conn, uuid)
+    conn = put(conn, uuid, body)
     assert conn.status == 200
     Funnel.Es.unpercolate(uuid)
   end
