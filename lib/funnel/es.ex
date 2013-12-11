@@ -10,6 +10,11 @@ defmodule Funnel.Es do
     "http://localhost:9200" <> url
   end
 
+  # Noop atm
+  def percolate(body) do
+    body
+  end
+
   def register(body) do
     do_percolate(Funnel.Uuid.generate, body)
   end
