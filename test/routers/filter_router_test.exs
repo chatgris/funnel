@@ -49,6 +49,28 @@ defmodule FilterRouterTest do
     Funnel.Es.unpercolate(uuid)
   end
 
+  test "delete a existing filter" do
+    body = '{"query" : {"term" : {"field1" : "value1"}}}'
+    conn = conn(:POST, "/")
+    conn = conn.put_req_header "Content-Type", "application/json"
+    conn = post(conn, "/", body)
+    assert conn.status == 201
+    {:ok, body} = JSEX.decode conn.resp_body
+    uuid = body["filter_id"]
+    conn = conn(:PUT, uuid)
+    conn = conn.put_req_header "Content-Type", "application/json"
+    conn = delete(conn, uuid)
+    assert conn.status == 200
+  end
+
+  test "delete a non-existing filter" do
+    uuid = "uuid"
+    conn = conn(:PUT, uuid)
+    conn = conn.put_req_header "Content-Type", "application/json"
+    conn = delete(conn, uuid)
+    assert conn.status == 404
+  end
+
   test "returns json" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     conn = conn(:POST, "/", body)
