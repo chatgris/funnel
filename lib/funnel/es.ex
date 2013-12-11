@@ -10,19 +10,19 @@ defmodule Funnel.Es do
     "http://localhost:9200" <> url
   end
 
-  def percolate(body) do
+  def register(body) do
     do_percolate(Funnel.Uuid.generate, body)
   end
 
-  def percolate(uuid, body) do
+  def register(uuid, body) do
     do_percolate(uuid, body)
   end
 
-  def unpercolate do
+  def unregister do
     do_unpercolate("/_percolator/funnel")
   end
 
-  def unpercolate(id) do
+  def unregister(id) do
     do_unpercolate("/_percolator/funnel_#{Mix.env}/#{id}")
   end
 

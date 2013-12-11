@@ -30,7 +30,7 @@ defmodule FilterRouterTest do
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     assert conn.status == 201
-    Funnel.Es.unpercolate(uuid)
+    Funnel.Es.unregister(uuid)
   end
 
   test "update a filter" do
@@ -46,7 +46,7 @@ defmodule FilterRouterTest do
     conn = conn.put_req_header "Content-Type", "application/json"
     conn = put(conn, "#{uuid}?token=token", body)
     assert conn.status == 200
-    Funnel.Es.unpercolate(uuid)
+    Funnel.Es.unregister(uuid)
   end
 
   test "delete a existing filter" do
