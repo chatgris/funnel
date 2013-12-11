@@ -27,7 +27,10 @@ defmodule FilterRouterTest do
     conn = conn(:POST, "/")
     conn = conn.put_req_header "Content-Type", "application/json"
     conn = post(conn, "/", body)
+    {:ok, body} = JSEX.decode conn.resp_body
+    uuid = body["filter_id"]
     assert conn.status == 201
+    Funnel.Es.unpercolate(uuid)
   end
 
   test "returns 200" do
