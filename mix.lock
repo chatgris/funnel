@@ -1,6 +1,6 @@
 [ "cowboy": {:git, "git://github.com/extend/cowboy.git", "df818625545d565b8b76fbc445063a4822114b93", []},
   "cowlib": {:git, "git://github.com/extend/cowlib.git", "63298e8e160031a70efff86a1acde7e7db1fcda6", [{:ref, "0.4.0"}]},
-  "dynamo": {:git, "git://github.com/chatgris/dynamo.git", "1c747af3e51c11e72b263b3060e7bf684a565877", []},
+  "dynamo": {:git, "git://github.com/chatgris/dynamo.git", "38e70235505d8530d716601aea3571d9bfc4a417", []},
   "httpotion": {:git, "git://github.com/chatgris/httpotion.git", "623305ed1b7e563f2561c7e8869f897b60e435a1", []},
   "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "fb97c6601418c836bc8805ada1c200ce640b441d", []},
   "jsex": {:git, "git://github.com/talentdeficit/jsex.git", "c9df36f07b2089a73ab6b32074c01728f1e5a2e1", []},
