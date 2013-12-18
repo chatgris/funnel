@@ -5,6 +5,7 @@ defmodule ApplicationRouter do
   forward "/status", to: StatusRouter
   forward "/ohai",   to: OhaiRouter
   forward "/filter", to: FilterRouter
+  forward "/feeding", to: FeedingRouter
 
   get "/" do
     {:ok, payload} = JSEX.encode [message: "Welcome to funnel"]
