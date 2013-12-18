@@ -1,5 +1,5 @@
 defmodule FilterRouterTest do
-  use Funnel.TestCase, async: true
+  use Funnel.TestCase
   use Dynamo.HTTP.Case
 
   @endpoint FilterRouter
