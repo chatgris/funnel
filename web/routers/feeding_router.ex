@@ -5,7 +5,7 @@ defmodule FeedingRouter do
   prepare do: conn.fetch(:body)
 
   post "/" do
-    Funnel.Es.percolate conn.req_body
-    conn.resp 204, nil
+    Funnel.Percolator.percolate conn.req_body
+    conn.resp 204, ""
   end
 end

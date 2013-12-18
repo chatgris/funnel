@@ -7,6 +7,6 @@ defmodule FeedingRouterTest do
   test "204 and an empty body" do
     conn = post("/", "fake_body")
     assert conn.status == 204
-    assert conn.resp_body == nil
+    assert conn.resp_body == ""
   end
 end
