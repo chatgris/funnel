@@ -85,6 +85,6 @@ defmodule FilterRouterTest do
     conn = conn.put_req_header "Content-Type", "application/json"
     conn = post(conn, "/?token=token", body)
     {:ok, body} = JSEX.decode conn.resp_body
-    assert size(body["filter_id"]) == 36
+    assert size(body["filter_id"]) == 32
   end
 end
