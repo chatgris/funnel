@@ -5,6 +5,6 @@ defmodule Funnel.Uuid do
   """
 
   def generate do
-    to_string(:uuid.to_string(:uuid.v4()))
+    String.replace(to_string(:uuid.to_string(:uuid.v4())), "-", "")
   end
 end

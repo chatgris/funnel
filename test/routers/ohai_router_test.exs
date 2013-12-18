@@ -17,7 +17,7 @@ defmodule OhaiRouterTest do
   test "returns a token" do
     conn = post("/")
     {:ok, body} = JSEX.decode conn.resp_body
-    assert size(body["token"]) == 36
+    assert size(body["token"]) == 32
   end
 
 end
