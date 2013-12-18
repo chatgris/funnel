@@ -12,7 +12,9 @@ defmodule Funnel.Es do
 
   # Noop atm
   def percolate(body) do
-    body
+    percolation = post("/#{namespace}/message/_percolate", body)
+    {:ok, body} = JSEX.decode percolation.body
+    body["matches"]
   end
 
   def register(body) do
@@ -24,15 +26,19 @@ defmodule Funnel.Es do
   end
 
   def unregister do
-    do_unpercolate("/_percolator/funnel")
+    do_unpercolate("/_percolator/#{namespace}")
   end
 
   def unregister(id) do
-    do_unpercolate("/_percolator/funnel_#{Mix.env}/#{id}")
+    do_unpercolate("/_percolator/#{namespace}/#{id}")
   end
 
   def refresh do
     post("/_refresh", "")
+  end
+
+  def create do
+    put("/#{namespace}", "")
   end
 
   defp do_unpercolate(path) do
@@ -45,5 +51,9 @@ defmodule Funnel.Es do
     {:ok, body} = JSEX.decode(percolation.body)
     {:ok, response} = JSEX.encode([filter_id: uuid, body: body])
     {percolation.status_code, response}
+  end
+
+  defp namespace do
+    "funnel_#{Mix.env}"
   end
 end
