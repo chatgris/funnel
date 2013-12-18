@@ -31,6 +31,10 @@ defmodule Funnel.Es do
     do_unpercolate("/_percolator/funnel_#{Mix.env}/#{id}")
   end
 
+  def refresh do
+    post("/_refresh", "")
+  end
+
   defp do_unpercolate(path) do
     del = delete path
     {del.status_code, del.body}
