@@ -4,17 +4,17 @@ defmodule FilterRouter do
   filter TokenFilter
 
   post "/" do
-    {status_code, response} = Funnel.Es.register conn.req_body
+    {status_code, response} = Funnel.Es.register conn.params[:token], conn.req_body
     conn.resp status_code, response
   end
 
   put ":uuid" do
-    {status_code, response} = Funnel.Es.register conn.params[:uuid], conn.req_body
+    {status_code, response} = Funnel.Es.register conn.params[:token], conn.params[:uuid], conn.req_body
     conn.resp status_code, response
   end
 
   delete ":uuid" do
-    {status_code, response} = Funnel.Es.unregister conn.params[:uuid]
+    {status_code, response} = Funnel.Es.unregister conn.params[:token], conn.params[:uuid]
     conn.resp status_code, response
   end
 end
