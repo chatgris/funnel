@@ -45,7 +45,7 @@ defmodule EsTest do
     {:ok, body} = JSEX.decode response
     uuid = body["filter_id"]
     Funnel.Es.refresh
-    assert Funnel.Es.percolate(message) == ["token_#{uuid}"]
+    assert Funnel.Es.percolate(message) == ["token-#{uuid}"]
     Funnel.Es.unregister("token", uuid)
   end
 
