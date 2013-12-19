@@ -35,7 +35,6 @@ defmodule EsTest do
 
   test "returns a 400 on bad payload" do
     {status, response} = Funnel.Es.register("token", "")
-    {:ok, body} = JSEX.decode response
     assert status == 400
   end
 
