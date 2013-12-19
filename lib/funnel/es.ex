@@ -17,20 +17,20 @@ defmodule Funnel.Es do
     body["matches"]
   end
 
-  def register(body) do
-    do_percolate(Funnel.Uuid.generate, body)
+  def register(token, body) do
+    do_percolate(token, Funnel.Uuid.generate, body)
   end
 
-  def register(uuid, body) do
-    do_percolate(uuid, body)
+  def register(token, uuid, body) do
+    do_percolate(token, uuid, body)
   end
 
   def unregister do
     do_unpercolate("/_percolator/#{namespace}")
   end
 
-  def unregister(id) do
-    do_unpercolate("/_percolator/#{namespace}/#{id}")
+  def unregister(token, id) do
+    do_unpercolate("/_percolator/#{namespace}/#{token}_#{id}")
   end
 
   def refresh do
@@ -46,8 +46,9 @@ defmodule Funnel.Es do
     {del.status_code, del.body}
   end
 
-  defp do_percolate(uuid, body) do
-    percolation = put("/_percolator/funnel_#{Mix.env}/#{uuid}", body)
+  defp do_percolate(token, uuid, body) do
+    id = "#{token}_#{uuid}"
+    percolation = put("/_percolator/funnel_#{Mix.env}/#{id}", body)
     {:ok, body} = JSEX.decode(percolation.body)
     {:ok, response} = JSEX.encode([filter_id: uuid, body: body])
     {percolation.status_code, response}
