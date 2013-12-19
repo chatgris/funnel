@@ -30,7 +30,7 @@ defmodule Funnel.Es do
   end
 
   def unregister(token, id) do
-    do_unpercolate("/_percolator/#{namespace}/#{token}_#{id}")
+    do_unpercolate("/_percolator/#{namespace}/#{token}-#{id}")
   end
 
   def refresh do
@@ -47,7 +47,7 @@ defmodule Funnel.Es do
   end
 
   defp do_percolate(token, uuid, body) do
-    id = "#{token}_#{uuid}"
+    id = "#{token}-#{uuid}"
     percolation = put("/_percolator/funnel_#{Mix.env}/#{id}", body)
     {:ok, body} = JSEX.decode(percolation.body)
     {:ok, response} = JSEX.encode([filter_id: uuid, body: body])
