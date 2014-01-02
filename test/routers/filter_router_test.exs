@@ -5,63 +5,63 @@ defmodule FilterRouterTest do
   @endpoint FilterRouter
 
   test "returns 400 when an empty body is given" do
-    conn = post("/?token=token")
+    conn = post("/?token=token&index_id=funnel")
     assert conn.status == 400
   end
 
   test "returns 400 when an empty body is given on put" do
-    conn = put("/uuid?token=token")
+    conn = put("/uuid?token=token&index_id=funnel")
     assert conn.status == 400
   end
 
   test "create a filter" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/?token=token")
+    conn = conn(:POST, "/?token=token&index_id=funnel")
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/?token=token", body)
+    conn = post(conn, "/?token=token&index_id=funnel", body)
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     assert conn.status == 201
     assert conn.resp_headers["Content-Type"] == "application/json"
-    Funnel.Es.unregister("token", uuid)
+    Funnel.Es.unregister("funnel", "token", uuid)
   end
 
   test "update a filter" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/?token=token")
+    conn = conn(:POST, "/?token=token&index_id=funnel")
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/?token=token", body)
+    conn = post(conn, "/?token=token&index_id=funnel", body)
     assert conn.status == 201
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
-    conn = conn(:PUT, "#{uuid}?token=token")
+    conn = conn(:PUT, "#{uuid}?token=token&index_id=funnel")
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = put(conn, "#{uuid}?token=token", body)
+    conn = put(conn, "#{uuid}?token=token&index_id=funnel", body)
     assert conn.status == 200
-    Funnel.Es.unregister("token", uuid)
+    Funnel.Es.unregister("funnel", "token", uuid)
   end
 
   test "delete a existing filter" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/?token=token")
+    conn = conn(:POST, "/?token=token&index_id=funnel")
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/?token=token", body)
+    conn = post(conn, "/?token=token&index_id=funnel", body)
     assert conn.status == 201
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     conn = conn(:PUT, uuid)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = delete(conn, "#{uuid}?token=token")
+    conn = delete(conn, "#{uuid}?token=token&index_id=funnel")
     assert conn.status == 200
-    Funnel.Es.unregister("token", uuid)
+    Funnel.Es.unregister("funnel", "token", uuid)
   end
 
   test "delete a non-existing filter" do
     uuid = "uuid"
     conn = conn(:PUT, uuid)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = delete(conn, "#{uuid}?token=token")
+    conn = delete(conn, "#{uuid}?token=token&index_id=funnel")
     assert conn.status == 404
   end
 
@@ -69,10 +69,10 @@ defmodule FilterRouterTest do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     conn = conn(:POST, "/", body)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/?token=token", body)
+    conn = post(conn, "/?token=token&index_id=funnel", body)
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     assert size(uuid) == 32
-    Funnel.Es.unregister("token", uuid)
+    Funnel.Es.unregister("funnel", "token", uuid)
   end
 end
