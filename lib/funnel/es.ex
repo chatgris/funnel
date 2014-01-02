@@ -41,6 +41,19 @@ defmodule Funnel.Es do
     put("/#{namespace}", "")
   end
 
+  def create(body) do
+    uuid = Funnel.Uuid.generate
+    response = post(namespace(uuid), body)
+    {:ok, body} = JSEX.decode(response.body)
+    {:ok, serialization} = JSEX.encode([index_id: uuid, body: body])
+    {response.status_code, serialization}
+  end
+
+  def destroy(index_id) do
+    namespace(index_id)
+      |> delete
+  end
+
   defp do_unpercolate(path) do
     del = delete path
     {del.status_code, del.body}
@@ -56,5 +69,9 @@ defmodule Funnel.Es do
 
   defp namespace do
     "funnel_#{Mix.env}"
+  end
+
+  defp namespace(index_id) do
+    "/#{index_id}_#{Mix.env}"
   end
 end
