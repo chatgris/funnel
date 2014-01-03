@@ -34,7 +34,7 @@ defmodule EsTest do
   end
 
   test "returns a 400 on bad payload" do
-    {status, response} = Funnel.Es.register("funnel", "token", "")
+    {status, _} = Funnel.Es.register("funnel", "token", "")
     assert status == 400
   end
 
