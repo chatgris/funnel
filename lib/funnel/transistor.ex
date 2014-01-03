@@ -3,8 +3,7 @@ defmodule Funnel.Transistor do
 
   def start_link(conn) do
     conn = conn.send_chunked(200)
-    :gen_server.start_link({:local, name(conn)}, __MODULE__, conn, [])
-    conn
+    {conn, :gen_server.start_link({:local, name(conn)}, __MODULE__, conn, []) }
   end
 
   def notify(token, match, body) do
