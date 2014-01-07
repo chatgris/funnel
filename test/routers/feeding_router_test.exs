@@ -5,7 +5,7 @@ defmodule FeedingRouterTest do
   @endpoint FeedingRouter
 
   test "204 and an empty body" do
-    conn = post("/", "fake_body")
+    conn = post("/", '{"fake":"body"}')
     assert conn.status == 204
     assert conn.resp_body == ""
   end

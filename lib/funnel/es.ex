@@ -14,7 +14,7 @@ defmodule Funnel.Es do
   def percolate(body) do
     percolation = post("/#{namespace}/message/_percolate", body)
     {:ok, body} = JSEX.decode percolation.body
-    body["matches"]
+    body["matches"] || []
   end
 
   def register(index_id, token, body) do
