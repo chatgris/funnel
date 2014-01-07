@@ -23,7 +23,8 @@ defmodule Funnel.Mixfile do
       { :httpotion,   github: "chatgris/httpotion" },
       { :jsex,        github: "talentdeficit/jsex" },
       { :dynamo,      github: "chatgris/dynamo" },
-      { :uuid,        github: "travis/erlang-uuid" }
+      { :uuid,        github: "travis/erlang-uuid" },
+      { :exactor,     github: "sasa1977/exactor"}
     ]
   end
 end
