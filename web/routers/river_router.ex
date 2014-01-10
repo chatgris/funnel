@@ -4,7 +4,8 @@ defmodule RiverRouter do
   filter TokenFilter
 
   get "/" do
-    {conn, _} = Funnel.Transistor.start_link conn
+    Funnel.Transistor.start_link conn
+    conn = Funnel.Transistor.add(conn)
     await(conn, &on_wake_up(&1, &2))
   end
 

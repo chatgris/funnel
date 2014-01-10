@@ -5,7 +5,7 @@ defmodule Funnel.TransistorTest do
   test "transistor is alive" do
     conn = conn(:GET, "/?token=secrettoken")
     conn = conn.fetch(:params)
-    { _, {:ok, transistor}} = Funnel.Transistor.start_link(conn)
+    {:ok, transistor} = Funnel.Transistor.start_link(conn)
     assert Process.alive?(transistor)
   end
 end
