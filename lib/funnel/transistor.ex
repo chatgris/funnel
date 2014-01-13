@@ -20,8 +20,7 @@ defmodule Funnel.Transistor do
 
   def handle_cast({:notify, match, body}, connexions) do
     {:ok, response} = JSEX.encode([filter_id: match, body: body])
-    connexions = Enum.map(connexions, fn(conn) -> notify(conn, response) end)
-    {:noreply, connexions}
+    {:noreply, Enum.reduce(connexions, [], fn(conn, acc) -> write(acc, conn, response) end) }
   end
 
   def handle_call({:add, conn}, _from, connexions) do
@@ -32,8 +31,15 @@ defmodule Funnel.Transistor do
     binary_to_atom(conn.params[:token])
   end
 
-  defp notify(conn, body) do
-    {:ok, conn} = conn.chunk "data: #{body}\n\n"
-    conn
+  defp write(acc, conn, body) do
+    filter acc, conn.chunk "data: #{body}\n\n"
+  end
+
+  defp filter(acc, {:ok, conn}) do
+    [conn | acc]
+  end
+
+  defp filter(acc, {:error, _}) do
+    acc
   end
 end
