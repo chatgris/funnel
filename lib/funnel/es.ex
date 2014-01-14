@@ -7,7 +7,11 @@ defmodule Funnel.Es do
   use HTTPotion.Base
 
   def process_url(url) do
-    "http://localhost:9200" <> url
+    "#{host}#{url}"
+  end
+
+  def host do
+    :os.getenv("ES_HOST") || "http://localhost:9200"
   end
 
   # Noop atm
