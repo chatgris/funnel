@@ -1,5 +1,7 @@
 # Funnel
 
+[![Build Status](https://travis-ci.org/AF83/funnel.png?branch=master)](https://travis-ci.org/AF83/funnel)
+
 /!\ This is very early stage software.
 
 [What's funnel aims to be](https://github.com/AF83/funnel/blob/master/doc/Architecture.md).
