@@ -16,9 +16,8 @@ defmodule FilterRouterTest do
 
   test "create a filter" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/?token=token&index_id=funnel")
+    conn = post("/?token=token&index_id=funnel", body)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/?token=token&index_id=funnel", body)
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     assert conn.status == 201
@@ -28,25 +27,22 @@ defmodule FilterRouterTest do
 
   test "update a filter" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/?token=token&index_id=funnel")
+    conn = post("/?token=token&index_id=funnel", body)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/?token=token&index_id=funnel", body)
     assert conn.status == 201
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
-    conn = conn(:PUT, "#{uuid}?token=token&index_id=funnel")
+    conn = put("#{uuid}?token=token&index_id=funnel", body)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = put(conn, "#{uuid}?token=token&index_id=funnel", body)
     assert conn.status == 200
     Funnel.Es.unregister("funnel", "token", uuid)
   end
 
   test "delete a existing filter" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/?token=token&index_id=funnel")
+    conn = post("/?token=token&index_id=funnel", body)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/?token=token&index_id=funnel", body)
     assert conn.status == 201
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
@@ -67,9 +63,8 @@ defmodule FilterRouterTest do
 
   test "returns a filter_id" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    conn = conn(:POST, "/", body)
+    conn = post("/?token=token&index_id=funnel", body)
     conn = conn.put_req_header "Content-Type", "application/json"
-    conn = post(conn, "/?token=token&index_id=funnel", body)
     {:ok, body} = JSEX.decode conn.resp_body
     uuid = body["filter_id"]
     assert size(uuid) == 32
