@@ -8,5 +8,6 @@ defmodule Funnel.PercolatorTest do
       {:ok, percolator} ->
         percolator
     end
+    assert Process.alive?(percolator)
   end
 end
