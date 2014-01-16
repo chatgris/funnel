@@ -22,7 +22,7 @@ defmodule Funnel.Mixfile do
     [ { :cowboy,      github: "extend/cowboy" },
       { :httpotion,   github: "chatgris/httpotion" },
       { :jsex,        github: "talentdeficit/jsex" },
-      { :dynamo,      github: "chatgris/dynamo" },
+      { :dynamo,      github: "dynamo/dynamo" },
       { :uuid,        github: "travis/erlang-uuid" }
     ]
   end
