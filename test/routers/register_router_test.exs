@@ -1,8 +1,8 @@
-defmodule OhaiRouterTest do
+defmodule ReisterRouterTest do
   use Funnel.TestCase, async: true
   use Dynamo.HTTP.Case
 
-  @endpoint OhaiRouter
+  @endpoint RegisterRouter
 
   test "returns 201" do
     conn = post("/")
