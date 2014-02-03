@@ -20,8 +20,8 @@ defmodule Funnel.Percolator do
 
   * `body`     - Document in json
   """
-  def percolate(body) do
-    :gen_server.cast :percolator, {:percolate, body}
+  def percolate(index_id, body) do
+    :gen_server.cast :percolator, {:percolate, index_id, body}
   end
 
   @doc """
@@ -36,8 +36,8 @@ defmodule Funnel.Percolator do
 
   Percolates and notify on each match.
   """
-  def handle_cast({:percolate, body}, nil) do
-    Funnel.Es.percolate(body)
+  def handle_cast({:percolate, index_id, body}, nil) do
+    Funnel.Es.percolate(index_id, body)
       |> Enum.each(fn(match)-> notify(match, body) end)
     { :noreply, nil}
   end

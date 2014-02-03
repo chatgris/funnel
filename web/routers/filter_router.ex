@@ -2,6 +2,7 @@ defmodule FilterRouter do
   use Dynamo.Router
   filter JsonHeader
   filter TokenFilter
+  forward "/feeding", to: FeedingRouter
 
   post "/" do
     {status_code, response} = Funnel.Es.register conn.params[:index_id], conn.params[:token], conn.req_body
