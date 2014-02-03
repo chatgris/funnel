@@ -45,6 +45,8 @@ curl -H "Content-Type: application/json" -H "Accept: application/json" -XPOST ht
 {"token":"7d0ac81fbdd646dd9e883e3b007ce58d"}
 ```
 
+The token can be passed as a parameter, or by using the Authorization header.
+
 ### Index
 
 Ok, now, let's create an index:

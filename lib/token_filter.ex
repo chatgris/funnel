@@ -6,8 +6,9 @@ defmodule TokenFilter do
   use Dynamo.Router
 
   def prepare(conn) do
-    conn = conn.fetch([:params, :body])
-    unless conn.params[:token] do
+    conn = conn.fetch([:params, :body, :headers])
+    token = conn.req_headers["authorization"] || conn.params[:token]
+    unless token do
       halt! conn.status(400)
     end
     conn
