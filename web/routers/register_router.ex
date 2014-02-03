@@ -1,4 +1,4 @@
-defmodule OhaiRouter do
+defmodule RegisterRouter do
   use Dynamo.Router
   filter JsonHeader
 
