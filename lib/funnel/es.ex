@@ -24,8 +24,8 @@ defmodule Funnel.Es do
 
   Returns a list of filter_id matched by the Elasticsearch percolation.
   """
-  def percolate(body) do
-    percolation = post("/#{namespace}/message/_percolate", body)
+  def percolate(index_id, body) do
+    percolation = post("#{namespace(index_id)}/message/_percolate", body)
     {:ok, body} = JSEX.decode percolation.body
     body["matches"] || []
   end

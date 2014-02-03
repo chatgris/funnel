@@ -4,6 +4,7 @@ defmodule IndexRouter do
   filter TokenFilter
 
   forward "/:index_id", to: FilterRouter
+  prepare do: conn.fetch(:body)
 
   post "/" do
     {status_code, response} = Funnel.Es.create conn.req_body

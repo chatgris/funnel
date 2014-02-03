@@ -45,13 +45,13 @@ defmodule EsTest do
     {:ok, body} = JSEX.decode response
     uuid = body["filter_id"]
     Funnel.Es.refresh
-    assert Funnel.Es.percolate(message) == ["token-#{uuid}"]
+    assert Funnel.Es.percolate("funnel", message) == ["token-#{uuid}"]
     Funnel.Es.unregister("funnel", "token", uuid)
   end
 
   test "returns empty from percolator on non match" do
     message = '{"doc" : {"message" : "Ohai"}}'
-    assert Funnel.Es.percolate(message) == []
+    assert Funnel.Es.percolate("funnel", message) == []
   end
 
   test "creates a new index" do
