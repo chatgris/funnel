@@ -10,8 +10,8 @@ defmodule Funnel.Percolator do
 
   Start a new `Funnel.Percolator` actor.
   """
-  def start_link do
-    :gen_server.start_link({:local, :percolator}, __MODULE__, nil, [])
+  def start_link(_state) do
+    :gen_server.start_link(__MODULE__, nil, [])
   end
 
   @doc """
@@ -20,8 +20,8 @@ defmodule Funnel.Percolator do
 
   * `body`     - Document in json
   """
-  def percolate(index_id, body) do
-    :gen_server.cast :percolator, {:percolate, index_id, body}
+  def percolate(percolator, index_id, body) do
+    :gen_server.cast percolator, {:percolate, index_id, body}
   end
 
   @doc """
