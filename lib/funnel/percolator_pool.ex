@@ -1,6 +1,13 @@
 defmodule Funnel.PercolatorPool do
+  @moduledoc """
+  Pool of `Funnel.Percolators`.
+  """
   use Supervisor.Behaviour
 
+  @doc """
+
+  Start the percolators's pool
+  """
   def start_link do
     :supervisor.start_link(__MODULE__, [])
   end
@@ -21,6 +28,10 @@ defmodule Funnel.PercolatorPool do
     supervise(children, strategy: :one_for_one)
   end
 
+  @doc """
+
+  Submit a document to Elasticsearch's percolator through the pool.
+  """
   def percolate(index_id, body) do
     :poolboy.transaction(:percolator_pool, fn(percolator)-> Funnel.Percolator.percolate(percolator, index_id, body) end)
   end
