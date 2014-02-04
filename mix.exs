@@ -24,7 +24,8 @@ defmodule Funnel.Mixfile do
       { :jsex,        github: "talentdeficit/jsex" },
       { :dynamo,      github: "dynamo/dynamo" },
       { :uuid,        github: "travis/erlang-uuid" },
-      { :ex_doc,      github: "elixir-lang/ex_doc" }
+      { :ex_doc,      github: "elixir-lang/ex_doc" },
+      { :poolboy,     github: "devinus/poolboy"}
     ]
   end
 end
