@@ -6,7 +6,6 @@ defmodule Funnel do
   application and its Dynamos.
   """
   def start(_type, _args) do
-    Funnel.Dynamo.start_link([max_restarts: 5, max_seconds: 5])
-    Funnel.Percolator.start_link
+    Funnel.Supervisor.start_link(nil)
   end
 end
