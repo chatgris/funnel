@@ -16,7 +16,7 @@ new document matching this query is available.
 First, Elixir must be installed, check out the resources section.
 
 ``` shell
-mix gets.get
+mix deps.get
 ```
 
 ## Running things
