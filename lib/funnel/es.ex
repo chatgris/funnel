@@ -87,8 +87,8 @@ defmodule Funnel.Es do
   * `from`      - Used for pagination. Optional, default to 0.
   * `size`      - Maximum size of returned results. Optional, default to 0.
   """
-  def find(token, filter_id // "*", index_id // "*", from // 0, size // 50) do
-    post("/_percolator/_search", filter_search_query(token, filter_id, index_id, from, size))
+  def find(token, search_filter // HashDict.new) do
+    post("/_percolator/_search", filter_search_query(token, search_filter))
       |> do_filter_search
   end
 
@@ -146,7 +146,8 @@ defmodule Funnel.Es do
 
   defp do_filter_search(response) do
     {:ok, body} = JSEX.decode response.body
-    {response.status_code, body["hits"]["hits"]}
+    {:ok, body} = JSEX.encode(body["hits"]["hits"])
+    {response.status_code, body}
   end
 
   defp namespace do
@@ -161,7 +162,11 @@ defmodule Funnel.Es do
     :os.getenv("ES_HOST") || "http://localhost:9200"
   end
 
-  defp filter_search_query(token, filter_id, index_id, from, size) do
+  defp filter_search_query(token, search_filter) do
+    filter_id = Dict.get(search_filter, :filter_id, "*")
+    index_id = Dict.get(search_filter, :index_id, "*")
+    from = Dict.get(search_filter, :from, 0)
+    size = Dict.get(search_filter, :size, 50)
     '{"query": {"bool": {"must": [{"query_string": {"default_field": "_id","query": "#{token}-#{filter_id}"}},{"query_string":{"default_field": "_type","query": "#{namespace(index_id)}"}}]}},"from": #{from},"size": #{size}}'
 
   end
