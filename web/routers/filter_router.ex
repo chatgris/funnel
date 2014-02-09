@@ -4,6 +4,11 @@ defmodule FilterRouter do
   filter TokenFilter
   forward "/feeding", to: FeedingRouter
 
+  get "/" do
+    {status_code, response} = Funnel.Es.find conn.params[:token], conn.params
+    conn.resp status_code, response
+  end
+
   post "/" do
     {status_code, response} = Funnel.Es.register conn.params[:index_id], conn.params[:token], conn.req_body
     conn.resp status_code, response
