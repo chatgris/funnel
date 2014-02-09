@@ -25,7 +25,7 @@ defmodule Funnel.Es do
   Returns a list of filter_id matched by the Elasticsearch percolation.
   """
   def percolate(index_id, body) do
-    percolation = post("#{namespace(index_id)}/message/_percolate", body)
+    percolation = post("/#{namespace(index_id)}/message/_percolate", body)
     {:ok, body} = JSEX.decode percolation.body
     body["matches"] || []
   end
@@ -79,6 +79,21 @@ defmodule Funnel.Es do
 
   @doc """
 
+  Returns a list of filter for a given token.
+
+  * `token`     - User's token. Mandatory.
+  * `filter_id` - Filter's id. Optional, default to "*".
+  * `index_id`  - Index's id. Optional, default to "*".
+  * `from`      - Used for pagination. Optional, default to 0.
+  * `size`      - Maximum size of returned results. Optional, default to 0.
+  """
+  def find(token, filter_id // "*", index_id // "*", from // 0, size // 50) do
+    post("/_percolator/_search", filter_search_query(token, filter_id, index_id, from, size))
+      |> do_filter_search
+  end
+
+  @doc """
+
   Refresh Elasticsearch indexes.
   """
   def refresh do
@@ -101,7 +116,7 @@ defmodule Funnel.Es do
   """
   def create(body) do
     uuid = Funnel.Uuid.generate
-    response = post(namespace(uuid), body)
+    response = post("/#{namespace(uuid)}", body)
     {:ok, body} = JSEX.decode(response.body)
     {:ok, serialization} = JSEX.encode([index_id: uuid, body: body])
     {response.status_code, serialization}
@@ -112,7 +127,7 @@ defmodule Funnel.Es do
   Delete an index.
   """
   def destroy(index_id) do
-    namespace(index_id)
+    "/#{namespace(index_id)}"
       |> delete
   end
 
@@ -129,15 +144,25 @@ defmodule Funnel.Es do
     {percolation.status_code, response}
   end
 
+  defp do_filter_search(response) do
+    {:ok, body} = JSEX.decode response.body
+    {response.status_code, body["hits"]["hits"]}
+  end
+
   defp namespace do
     "funnel_#{Mix.env}"
   end
 
   defp namespace(index_id) do
-    "/#{index_id}_#{Mix.env}"
+    "#{index_id}_#{Mix.env}"
   end
 
   defp host do
     :os.getenv("ES_HOST") || "http://localhost:9200"
+  end
+
+  defp filter_search_query(token, filter_id, index_id, from, size) do
+    '{"query": {"bool": {"must": [{"query_string": {"default_field": "_id","query": "#{token}-#{filter_id}"}},{"query_string":{"default_field": "_type","query": "#{namespace(index_id)}"}}]}},"from": #{from},"size": #{size}}'
+
   end
 end
