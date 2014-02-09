@@ -65,58 +65,65 @@ defmodule EsTest do
 
   test "find a query based on token" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    {status, response} = Funnel.Es.register("funnel", "token", body)
+    {status, response} = Funnel.Es.register("funnel", "tokensecret", body)
     {:ok, body} = JSEX.decode response
     uuid = body["filter_id"]
     assert status == 201
     Funnel.Es.refresh
-    {status, response} = Funnel.Es.find("token", uuid)
+    hash = HashDict.new
+    hash = Dict.put(hash, :filter_id, uuid)
+    {status, response} = Funnel.Es.find("tokensecret", hash)
+    {:ok, response} = JSEX.decode response
     assert status == 200
     assert Enum.count(response) == 1
-    Funnel.Es.unregister("funnel", "token", uuid)
+    Funnel.Es.unregister("funnel", "tokensecret", uuid)
   end
 
   test "find several queries based on token" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    {status, response} = Funnel.Es.register("funnel", "token", body)
+    {status, response} = Funnel.Es.register("funnel", "tokenseveral", body)
     {:ok, body} = JSEX.decode response
     uuid = body["filter_id"]
     assert status == 201
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
-    {status, response} = Funnel.Es.register("funnel", "token", body)
+    {status, response} = Funnel.Es.register("funnel", "tokenseveral", body)
     assert status == 201
     {:ok, body} = JSEX.decode response
     uuid2 = body["filter_id"]
     Funnel.Es.refresh
-    {status, response} = Funnel.Es.find("token")
+    {status, response} = Funnel.Es.find("tokenseveral")
+    {:ok, response} = JSEX.decode response
     assert status == 200
     assert Enum.count(response) == 2
-    Funnel.Es.unregister("funnel", "token", uuid)
-    Funnel.Es.unregister("funnel", "token", uuid2)
+    Funnel.Es.unregister("funnel", "tokenseveral", uuid)
+    Funnel.Es.unregister("funnel", "tokenseveral", uuid2)
   end
 
   test "find several queries based on different index" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
-    {status, response} = Funnel.Es.register("index1", "token", body)
+    {status, response} = Funnel.Es.register("index1", "tokenindex", body)
     {:ok, body} = JSEX.decode response
     uuid = body["filter_id"]
     assert status == 201
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
-    {status, response} = Funnel.Es.register("index2", "token", body)
+    {status, response} = Funnel.Es.register("index2", "tokenindex", body)
     assert status == 201
     {:ok, body} = JSEX.decode response
     uuid2 = body["filter_id"]
     Funnel.Es.refresh
-    {status, response} = Funnel.Es.find("token")
-    assert status == 200
-    assert Enum.count(response) == 2
-    {status, response} = Funnel.Es.find("token", "*", "index1")
-    assert status == 200
-    assert Enum.count(response) == 1
-    {status, response} = Funnel.Es.find("token", "*", "index2")
+    hash = HashDict.new
+    hash = Dict.put(hash, :index_id, "index1")
+    {status, response} = Funnel.Es.find("tokenindex", hash)
+    {:ok, response} = JSEX.decode response
     assert status == 200
     assert Enum.count(response) == 1
-    Funnel.Es.unregister("index1", "token", uuid)
-    Funnel.Es.unregister("index2", "token", uuid2)
+    hash = HashDict.new
+    hash = Dict.put(hash, :index_id, "index2")
+    {status, response} = Funnel.Es.find("tokenindex", hash)
+    {:ok, response} = JSEX.decode response
+    assert status == 200
+    assert Enum.count(response) == 1
+    Funnel.Es.unregister("index1", "tokenindex", uuid)
+    Funnel.Es.unregister("index2", "tokenindex", uuid2)
   end
 end
