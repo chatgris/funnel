@@ -46,6 +46,7 @@ defmodule EsTest do
     uuid = body["filter_id"]
     Funnel.Es.refresh
     assert Funnel.Es.percolate("funnel", message) == ["token-#{uuid}"]
+    Funnel.Es.refresh
     Funnel.Es.unregister("funnel", "token", uuid)
   end
 
