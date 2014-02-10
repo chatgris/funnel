@@ -17,6 +17,6 @@ defmodule StatusRouterTest do
   test "returns full response from ES" do
     conn = get("/")
     {:ok, payload} = JSEX.decode(conn.resp_body)
-    assert payload["status"] == 200
+    assert payload["ok"] == true
   end
 end
