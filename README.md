@@ -52,7 +52,7 @@ examples:
 
 ``` shell
 -H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: 7d0ac81fbdd646dd9e883e3b007ce58d"
-``
+```
 
 ### Index
 
