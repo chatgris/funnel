@@ -39,7 +39,7 @@ defmodule Funnel.Es do
   * `body`     - Filter in json
   """
   def register(index_id, token, body) do
-    do_percolate(index_id, token, Funnel.Uuid.generate, body)
+    do_register(index_id, token, Funnel.Uuid.generate, body)
   end
 
   @doc """
@@ -52,7 +52,7 @@ defmodule Funnel.Es do
   * `body`     - Filter in json
   """
   def register(index_id, token, uuid, body) do
-    do_percolate(index_id, token, uuid, body)
+    do_register(index_id, token, uuid, body)
   end
 
   @doc """
@@ -62,7 +62,7 @@ defmodule Funnel.Es do
   * `index_id` - Index's id
   """
   def unregister(index_id) do
-    do_unpercolate("/_percolator/#{namespace(index_id)}")
+    do_unregister("/_percolator/#{namespace(index_id)}")
   end
 
   @doc """
@@ -74,7 +74,7 @@ defmodule Funnel.Es do
   * `uuid`     - Filter's id
   """
   def unregister(index_id, token, id) do
-    do_unpercolate("/_percolator/#{namespace(index_id)}/#{token}-#{id}")
+    do_unregister("/_percolator/#{namespace(index_id)}/#{token}-#{id}")
   end
 
   @doc """
@@ -131,12 +131,12 @@ defmodule Funnel.Es do
       |> delete
   end
 
-  defp do_unpercolate(path) do
+  defp do_unregister(path) do
     del = delete path
     {del.status_code, del.body}
   end
 
-  defp do_percolate(index_id, token, uuid, body) do
+  defp do_register(index_id, token, uuid, body) do
     id = "#{token}-#{uuid}"
     percolation = put("/_percolator/#{index_id}_#{Mix.env}/#{id}", body)
     {:ok, body} = JSEX.decode(percolation.body)
