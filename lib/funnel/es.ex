@@ -159,7 +159,10 @@ defmodule Funnel.Es do
   end
 
   defp host do
-    :os.getenv("ES_HOST") || "http://localhost:9200"
+    case System.get_env("ES_HOST") do
+      nil  -> "http://localhost:9200"
+      host -> host
+    end
   end
 
   defp filter_search_query(token, search_filter) do
