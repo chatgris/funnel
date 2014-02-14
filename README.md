@@ -60,10 +60,12 @@ Ok, now, let's create an index:
 
 ``` shell
 curl -XPOST "http://localhost:4000/index" -d '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : {"enabled" : false},"properties" :{"field1":{"type":"string","index":"not_analyzed"}}}}}'
-  {"index_id":"bfa3e5b02e554b458165815968ed490b","body":{"ok":true,"acknowledged":true}}
+{"index_id":"bfa3e5b02e554b458165815968ed490b","body":{"ok":true,"acknowledged":true}}
 ```
 
 ### Filter
+
+#### Adding filter
 
 Adding filters is done by using the `/filter` endpoint. The payload must
 comply with the funnel's filter serialization. These entries can accept a single
