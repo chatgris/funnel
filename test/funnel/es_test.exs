@@ -77,6 +77,9 @@ defmodule EsTest do
     {:ok, response} = JSEX.decode response
     assert status == 200
     assert Enum.count(response) == 1
+    item = Enum.at(response, 0)
+    assert item["filter_id"] == uuid
+    assert item["index_id"] == "funnel"
     Funnel.Es.unregister("funnel", "tokensecret", uuid)
   end
 
