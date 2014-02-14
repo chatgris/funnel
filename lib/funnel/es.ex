@@ -9,6 +9,7 @@ defmodule Funnel.Es do
   """
 
   use HTTPotion.Base
+  alias Funnel.FilterSearch
 
   @doc """
 
@@ -88,8 +89,8 @@ defmodule Funnel.Es do
   * `size`      - Maximum size of returned results. Optional, default to 0.
   """
   def find(token, search_filter \\ HashDict.new) do
-    post("/_percolator/_search", filter_search_query(token, search_filter))
-      |> do_filter_search
+    post("/_percolator/_search", FilterSearch.query(token, search_filter))
+      |> FilterSearch.response
   end
 
   @doc """
@@ -144,17 +145,11 @@ defmodule Funnel.Es do
     {percolation.status_code, response}
   end
 
-  defp do_filter_search(response) do
-    {:ok, body} = JSEX.decode response.body
-    {:ok, body} = JSEX.encode(body["hits"]["hits"])
-    {response.status_code, body}
-  end
-
-  defp namespace do
+  def namespace do
     "funnel_#{Mix.env}"
   end
 
-  defp namespace(index_id) do
+  def namespace(index_id) do
     "#{index_id}_#{Mix.env}"
   end
 
@@ -163,14 +158,5 @@ defmodule Funnel.Es do
       nil  -> "http://localhost:9200"
       host -> host
     end
-  end
-
-  defp filter_search_query(token, search_filter) do
-    filter_id = Dict.get(search_filter, :filter_id, "*")
-    index_id = Dict.get(search_filter, :index_id, "*")
-    from = Dict.get(search_filter, :from, 0)
-    size = Dict.get(search_filter, :size, 50)
-    '{"query": {"bool": {"must": [{"query_string": {"default_field": "_id","query": "#{token}-#{filter_id}"}},{"query_string":{"default_field": "_type","query": "#{namespace(index_id)}"}}]}},"from": #{from},"size": #{size}}'
-
   end
 end
