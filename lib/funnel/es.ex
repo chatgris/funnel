@@ -154,7 +154,7 @@ defmodule Funnel.Es do
   end
 
   defp host do
-    case System.get_env("ES_HOST") do
+    case System.get_env("FUNNEL_ES_HOST") do
       nil  -> "http://localhost:9200"
       host -> host
     end
