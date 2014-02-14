@@ -40,27 +40,14 @@ defmodule Funnel.Transistor.Cache do
   Returns the items present in cache.
 
   * `pid`    - Cache store
-  """
-  def list(pid) do
-    :gen_server.call pid, {:list}
-  end
-
-  @doc """
-  Returns the items present in cache.
-
-  * `pid`    - Cache store
   * `from`   - Last-Event-Id
   """
-  def list(pid, from) do
+  def list(pid, from \\ -1) do
     :gen_server.call pid, {:list, from}
   end
 
   def handle_cast({:push, item}, {index, cache, max}) do
     {:noreply, {index + 1, [[id: index, item: item] | Enum.take(cache, max - 1)], max}}
-  end
-
-  def handle_call({:list}, _from, {index, cache, max}) do
-    {:reply, Enum.reverse(cache), {index, cache, max}}
   end
 
   def handle_call({:list, last_id}, _from, {index, cache, max}) do
