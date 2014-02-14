@@ -87,7 +87,7 @@ defmodule Funnel.Es do
   * `from`      - Used for pagination. Optional, default to 0.
   * `size`      - Maximum size of returned results. Optional, default to 0.
   """
-  def find(token, search_filter // HashDict.new) do
+  def find(token, search_filter \\ HashDict.new) do
     post("/_percolator/_search", filter_search_query(token, search_filter))
       |> do_filter_search
   end
