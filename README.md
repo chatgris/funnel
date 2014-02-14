@@ -47,13 +47,19 @@ curl -H "Content-Type: application/json" -H "Accept: application/json" -XPOST ht
 
 The token can be passed as a parameter, or by using the Authorization header.
 
+For the sake of readability, we assume those headers for all subsequent
+examples:
+
+``` shell
+-H "Content-Type: application/json" -H "Accept: application/json" -H "Authorization: 7d0ac81fbdd646dd9e883e3b007ce58d"
+``
+
 ### Index
 
 Ok, now, let's create an index:
 
 ``` shell
-curl -H "Content-Type: application/json" -H "Accept: application/json" -XPOST
-"http://localhost:4000/index?token=7d0ac81fbdd646dd9e883e3b007ce58d" -d '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : {"enabled" : false},"properties" :{"field1":{"type":"string","index":"not_analyzed"}}}}}'
+curl -XPOST "http://localhost:4000/index" -d '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : {"enabled" : false},"properties" :{"field1":{"type":"string","index":"not_analyzed"}}}}}'
   {"index_id":"bfa3e5b02e554b458165815968ed490b","body":{"ok":true,"acknowledged":true}}
 ```
 
@@ -67,8 +73,24 @@ A filter is defined by a user's token, a name, and a json string representing th
 elasticsearch query.
 
 ``` shell
-curl -H "Content-Type: application/json" -H "Accept: application/json" -XPOST "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b?token=7d0ac81fbdd646dd9e883e3b007ce58d" -d '{"query" : {"term" : {"field1" : "value1"}}}'
+curl -XPOST "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b" -d '{"query" : {"term" : {"field1" : "value1"}}}'
 {"filter_id":"dac278b8a6904b469d85df0773d16f5a","body":{"ok":true,"_index":"_percolator","_type":"bfa3e5b02e554b458165815968ed490b_dev","_id":"7d0ac81fbdd646dd9e883e3b007ce58d-dac278b8a6904b469d85df0773d16f5a","_version":1}}
+```
+
+#### Searching filters
+
+Filters can be retrieved for a given `index_id` with the following:
+
+``` shell
+curl -XGET -XGET "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b/filters"
+[{"filter_id":"dac278b8a6904b469d85df0773d16f5a","index_id":"bfa3e5b02e554b458165815968ed490b","score":1.4142135}]
+```
+
+Filters can be retrieved for a given `token` with the following:
+
+``` shell
+curl -XGET -XGET "http://localhost:4000/filters"
+[{"filter_id":"dac278b8a6904b469d85df0773d16f5a","index_id":"bfa3e5b02e554b458165815968ed490b","score":1.4142135}]
 ```
 
 ### Submiting documents
@@ -78,7 +100,7 @@ comply with the funnel's message serialization.
 
 
 ``` shell
-curl -H "Content-Type: application/json" -H "Accept: application/json" -XPOST "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b/feeding?token=7d0ac81fbdd646dd9e883e3b007ce58d" -d '{"doc":{"field1" : "value1"}}'
+curl -XPOST "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b/feeding" -d '{"doc":{"field1" : "value1"}}'
 ```
 
 ### Streaming
