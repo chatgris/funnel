@@ -11,6 +11,6 @@ defmodule TokenFilter do
     unless token do
       halt! conn.status(400)
     end
-    conn
+    conn.assign(:token, token)
   end
 end
