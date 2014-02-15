@@ -15,11 +15,15 @@ new document matching this query is available.
 
 First, Elixir must be installed, check out the resources section.
 
+Once Elixir is installed, dependencies must be installed with:
+
 ``` shell
 mix deps.get
 ```
 
 ## Running things
+
+Starting the HTTP API:
 
 ``` shell
 iex -S mix server
@@ -36,7 +40,7 @@ mix test
 
 ### Register
 
-A user, or a device, can register to funnel by using the `/ohai` endpoint.
+A user, or a device, can register to funnel by using the `/register` endpoint.
 This will return a token. This token must be used in all communications with the
 funnel's API.
 
