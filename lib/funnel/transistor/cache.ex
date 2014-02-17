@@ -23,7 +23,7 @@ defmodule Funnel.Transistor.Cache do
       nil -> 10
       max -> max
     end
-    {:ok, {0, [], max}}
+    {:ok, Funnel.Transistor.CacheState.new(max: max)}
   end
 
   @doc """
@@ -46,15 +46,19 @@ defmodule Funnel.Transistor.Cache do
     :gen_server.call pid, {:list, from}
   end
 
-  def handle_cast({:push, item}, {index, cache, max}) do
-    {:noreply, {index + 1, [[id: index, item: item] | Enum.take(cache, max - 1)], max}}
+  def handle_cast({:push, item}, state) do
+    {:noreply, state.update(index: state.index + 1, items: new_items(state, item))}
   end
 
-  def handle_call({:list, last_id}, _from, {index, cache, max}) do
-    {:reply, Enum.reverse(selected(cache, last_id)), {index, cache, max}}
+  def handle_call({:list, last_id}, _from, state) do
+    {:reply, Enum.reverse(selected(state.items, last_id)), state}
   end
 
   defp selected(cache, from) do
     Enum.filter(cache, fn(item) -> item[:id] > from end)
+  end
+
+  defp new_items(state, item) do
+    [[id: state.index, item: item] | Enum.take(state.items, state.max - 1)]
   end
 end
