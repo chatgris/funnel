@@ -5,6 +5,7 @@ defmodule Funnel.Transistor.Cache do
   """
 
   use GenServer.Behaviour
+  alias Funnel.Transistor.CacheState
 
   @doc """
 
@@ -23,7 +24,7 @@ defmodule Funnel.Transistor.Cache do
       nil -> 10
       max -> max
     end
-    {:ok, Funnel.Transistor.CacheState.new(max: max)}
+    {:ok, CacheState.new(max: max)}
   end
 
   @doc """
