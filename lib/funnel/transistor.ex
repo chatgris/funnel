@@ -10,7 +10,7 @@ defmodule Funnel.Transistor do
   Start a new `Funnel.Transistor` actor.
   """
   def start_link(conn) do
-    :gen_server.start_link({:local, name(conn)}, __MODULE__, [], [])
+    :gen_server.start_link({:global, name(conn)}, __MODULE__, [], [])
   end
 
   @doc """
