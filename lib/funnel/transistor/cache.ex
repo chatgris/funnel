@@ -43,8 +43,38 @@ defmodule Funnel.Transistor.Cache do
   * `pid`    - Cache store
   * `from`   - Last-Event-Id
   """
-  def list(pid, from \\ -1) do
+  def list(pid, from) when is_binary(from) do
+    from = binary_to_integer(from)
     :gen_server.call pid, {:list, from}
+  end
+
+  @doc """
+  Returns the items present in cache.
+
+  * `pid`    - Cache store
+  * `from`   - Last-Event-Id
+  """
+  def list(pid, from) when is_integer(from) do
+    :gen_server.call pid, {:list, from}
+  end
+
+  @doc """
+  Returns the items present in cache.
+
+  * `pid`    - Cache store
+  * `from`   - Last-Event-Id
+  """
+  def list(pid, nil) do
+    :gen_server.call pid, {:list, -1}
+  end
+
+  @doc """
+  Returns the items present in cache.
+
+  * `pid`    - Cache store
+  """
+  def list(pid) do
+    :gen_server.call pid, {:list, -1}
   end
 
   def handle_call({:push, item}, _from, state) do

@@ -12,8 +12,7 @@ defmodule Funnel.Transistor do
   Start a new `Funnel.Transistor` actor.
   """
   def start_link(conn) do
-    {:ok, cache} = Funnel.Transistor.Cache.start_link
-    :gen_server.start_link({:local, name(conn)}, __MODULE__, cache, [])
+    find(name(conn))
   end
 
   @doc """
@@ -25,7 +24,8 @@ defmodule Funnel.Transistor do
   * `body`     - Document in json
   """
   def notify(token, match, body) do
-    :gen_server.cast binary_to_atom(token), {:notify, match, body}
+    {:ok, pid} = find(binary_to_atom(token))
+    :gen_server.cast pid, {:notify, match, body}
   end
 
   @doc """
@@ -63,6 +63,7 @@ defmodule Funnel.Transistor do
   Add a connection to the connections's pool.
   """
   def handle_call({:add, conn}, _from, state) do
+    conn = write_from_cache(conn, state.cache)
     {:reply, conn, state.update(connections: [conn | state.connections])}
   end
 
@@ -71,7 +72,7 @@ defmodule Funnel.Transistor do
   end
 
   defp write(acc, conn, response, id) do
-    filter acc, conn.chunk "id:#{id}\n\ndata: #{response}\n\n"
+    filter acc, conn.chunk message(id, response)
   end
 
   defp filter(acc, {:ok, conn}) do
@@ -80,5 +81,30 @@ defmodule Funnel.Transistor do
 
   defp filter(acc, {:error, _}) do
     acc
+  end
+
+  defp find(name) do
+    case Process.whereis name do
+      nil -> boot(name)
+      pid -> {:ok, pid}
+    end
+  end
+
+  defp boot(name) do
+    {:ok, cache} = Funnel.Transistor.Cache.start_link
+    :gen_server.start_link({:local, name}, __MODULE__, cache, [])
+  end
+
+  defp write_from_cache(conn, cache) do
+    Enum.reduce(Cache.list(cache, conn.params[:last_id]), conn, &write/2)
+  end
+
+  defp write(item, conn) do
+    {:ok, conn} = conn.chunk message(item[:id], item[:item])
+    conn
+  end
+
+  defp message(id, body) do
+    "id:#{id}\ndata: #{body}\n\n"
   end
 end
