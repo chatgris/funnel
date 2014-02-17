@@ -34,7 +34,7 @@ defmodule Funnel.Transistor.Cache do
   * `item`   - Pretty much anything
   """
   def push(pid, item) do
-    :gen_server.cast pid, {:push, item}
+    :gen_server.call pid, {:push, item}
   end
 
   @doc """
@@ -47,8 +47,8 @@ defmodule Funnel.Transistor.Cache do
     :gen_server.call pid, {:list, from}
   end
 
-  def handle_cast({:push, item}, state) do
-    {:noreply, state.update(index: state.index + 1, items: new_items(state, item))}
+  def handle_call({:push, item}, _from, state) do
+    {:reply, state.index + 1, state.update(index: state.index + 1, items: new_items(state, item))}
   end
 
   def handle_call({:list, last_id}, _from, state) do
