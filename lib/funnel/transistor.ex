@@ -41,24 +41,25 @@ defmodule Funnel.Transistor do
   Default values of `Funnel.Transistor`. An empty pool of connections.
   """
   def init([]) do
-    {:ok, []}
+    { :ok, Funnel.TransistorState.new(connections: []) }
   end
 
   @doc """
 
   Writes on each connections the matched document.
   """
-  def handle_cast({:notify, match, body}, connections) do
+  def handle_cast({:notify, match, body}, state) do
     {:ok, response} = JSEX.encode([filter_id: match, body: body])
-    {:noreply, Enum.reduce(connections, [], fn(conn, acc) -> write(acc, conn, response) end) }
+    connections = Enum.reduce(state.connections, [], fn(conn, acc) -> write(acc, conn, response) end)
+    {:noreply, state.update(connections: connections) }
   end
 
   @doc """
 
   Add a connection to the connections's pool.
   """
-  def handle_call({:add, conn}, _from, connections) do
-    {:reply, conn, [conn | connections]}
+  def handle_call({:add, conn}, _from, state) do
+    {:reply, conn, state.update(connections: [conn | state.connections])}
   end
 
   defp name(conn) do
