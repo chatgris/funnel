@@ -1,1 +1,1 @@
-defrecord Funnel.TransistorState, cache: nil, connections: nil
+defrecord Funnel.TransistorState, cache: nil, connections: []

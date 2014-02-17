@@ -4,13 +4,16 @@ defmodule Funnel.Transistor do
   will notify a matching document on each of thoses connections.
   """
   use GenServer.Behaviour
+  alias Funnel.Transistor.Cache
+  alias Funnel.TransistorState
 
   @doc """
 
   Start a new `Funnel.Transistor` actor.
   """
   def start_link(conn) do
-    :gen_server.start_link({:global, name(conn)}, __MODULE__, [], [])
+    {:ok, cache} = Funnel.Transistor.Cache.start_link
+    :gen_server.start_link({:local, name(conn)}, __MODULE__, cache, [])
   end
 
   @doc """
@@ -40,8 +43,8 @@ defmodule Funnel.Transistor do
 
   Default values of `Funnel.Transistor`. An empty pool of connections.
   """
-  def init([]) do
-    { :ok, Funnel.TransistorState.new(connections: []) }
+  def init(cache) do
+    { :ok, TransistorState.new(cache: cache) }
   end
 
   @doc """
@@ -50,7 +53,8 @@ defmodule Funnel.Transistor do
   """
   def handle_cast({:notify, match, body}, state) do
     {:ok, response} = JSEX.encode([filter_id: match, body: body])
-    connections = Enum.reduce(state.connections, [], fn(conn, acc) -> write(acc, conn, response) end)
+    id = Cache.push(state.cache, response)
+    connections = Enum.reduce(state.connections, [], fn(conn, acc) -> write(acc, conn, response, id) end)
     {:noreply, state.update(connections: connections) }
   end
 
@@ -66,8 +70,8 @@ defmodule Funnel.Transistor do
     binary_to_atom(conn.params[:token])
   end
 
-  defp write(acc, conn, body) do
-    filter acc, conn.chunk "data: #{body}\n\n"
+  defp write(acc, conn, response, id) do
+    filter acc, conn.chunk "id:#{id}\n\ndata: #{response}\n\n"
   end
 
   defp filter(acc, {:ok, conn}) do
