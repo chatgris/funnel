@@ -1,20 +1,18 @@
 defmodule Funnel.Transistors do
   @moduledoc """
-
+  Supervise all `Funnel.Transistors`.
   """
   use Supervisor.Behaviour
 
   @doc """
-
-  Start the dynamo application and the percolators's pool
+  Start the Transistors's supervisor.
   """
   def start_link do
     :supervisor.start_link({:local, __MODULE__}, __MODULE__, [])
   end
 
   @doc """
-
-  Default values of `Funnel.Supervisor`.
+  Default values of `Funnel.Transistors`.
   """
   def init([]) do
     children = [worker(Funnel.Transistor, [])]
@@ -23,7 +21,6 @@ defmodule Funnel.Transistors do
   end
 
   @doc """
-
   Start a `Funnel.Transistor` under the supervision tree.
   """
   def add(token) do
