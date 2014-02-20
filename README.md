@@ -19,6 +19,7 @@ Once Elixir is installed, dependencies must be installed with:
 
 ``` shell
 mix deps.get
+mix
 ```
 
 ## Running things
