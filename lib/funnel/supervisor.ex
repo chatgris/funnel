@@ -20,6 +20,7 @@ defmodule Funnel.Supervisor do
   def init(nil) do
     children = [
       worker(Funnel.PercolatorPool, []),
+      supervisor(Funnel.Transistors, []),
       supervisor(Funnel.Dynamo, [])
     ]
 
