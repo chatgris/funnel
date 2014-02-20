@@ -11,8 +11,8 @@ defmodule Funnel.Transistor do
 
   Start a new `Funnel.Transistor` actor.
   """
-  def start_link(conn) do
-    find(name(conn))
+  def start_link(token) do
+    find_or_start(name(token))
   end
 
   @doc """
@@ -24,7 +24,7 @@ defmodule Funnel.Transistor do
   * `body`     - Document in json
   """
   def notify(token, match, body) do
-    {:ok, pid} = find(binary_to_atom(token))
+    {:ok, pid} = find_or_start(binary_to_atom(token))
     :gen_server.cast pid, {:notify, match, body}
   end
 
@@ -33,10 +33,11 @@ defmodule Funnel.Transistor do
   Wrapper around `GenServer`. Add a new connection in the connections's pool.
 
   * `conn`    - Dynamo's connection
+  * `token`   - the token used to identify the connection
   """
-  def add(conn) do
+  def add(conn, token) do
     conn = conn.send_chunked(200)
-    :gen_server.call name(conn), {:add, conn}
+    :gen_server.call name(token), {:add, conn}
   end
 
   @doc """
@@ -54,7 +55,7 @@ defmodule Funnel.Transistor do
   def handle_cast({:notify, match, body}, state) do
     {:ok, response} = JSEX.encode([filter_id: match, body: body])
     id = Cache.push(state.cache, response)
-    connections = Enum.reduce(state.connections, [], fn(conn, acc) -> write(acc, conn, response, id) end)
+    connections = Enum.reduce(state.connections, [], fn(conn, connections) -> write(connections, conn, response, id) end)
     {:noreply, state.update(connections: connections) }
   end
 
@@ -67,23 +68,23 @@ defmodule Funnel.Transistor do
     {:reply, conn, state.update(connections: [conn | state.connections])}
   end
 
-  defp name(conn) do
-    binary_to_atom(conn.params[:token])
+  defp name(token) do
+    binary_to_atom(token)
   end
 
-  defp write(acc, conn, response, id) do
-    filter acc, conn.chunk message(id, response)
+  defp write(connections, conn, response, id) do
+    result_write connections, conn.chunk message(id, response)
   end
 
-  defp filter(acc, {:ok, conn}) do
-    [conn | acc]
+  defp result_write(connections, {:ok, conn}) do
+    [conn | connections]
   end
 
-  defp filter(acc, {:error, _}) do
-    acc
+  defp result_write(connections, {:error, _}) do
+    connections
   end
 
-  defp find(name) do
+  defp find_or_start(name) do
     case Process.whereis name do
       nil -> boot(name)
       pid -> {:ok, pid}
