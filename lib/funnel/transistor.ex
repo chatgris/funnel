@@ -55,7 +55,7 @@ defmodule Funnel.Transistor do
   def handle_cast({:notify, match, body}, state) do
     {:ok, response} = JSEX.encode([filter_id: match, body: body])
     id = Cache.push(state.cache, response)
-    connections = Enum.reduce(state.connections, [], fn(conn, acc) -> write(acc, conn, response, id) end)
+    connections = Enum.reduce(state.connections, [], fn(conn, connections) -> write(connections, conn, response, id) end)
     {:noreply, state.update(connections: connections) }
   end
 
@@ -72,16 +72,16 @@ defmodule Funnel.Transistor do
     binary_to_atom(token)
   end
 
-  defp write(acc, conn, response, id) do
-    filter acc, conn.chunk message(id, response)
+  defp write(connections, conn, response, id) do
+    result_write connections, conn.chunk message(id, response)
   end
 
-  defp filter(acc, {:ok, conn}) do
-    [conn | acc]
+  defp result_write(connections, {:ok, conn}) do
+    [conn | connections]
   end
 
-  defp filter(acc, {:error, _}) do
-    acc
+  defp result_write(connections, {:error, _}) do
+    connections
   end
 
   defp find_or_start(name) do
