@@ -11,8 +11,8 @@ defmodule Funnel.Transistor do
 
   Start a new `Funnel.Transistor` actor.
   """
-  def start_link(conn) do
-    find(name(conn))
+  def start_link(token) do
+    find(name(token))
   end
 
   @doc """
@@ -33,10 +33,11 @@ defmodule Funnel.Transistor do
   Wrapper around `GenServer`. Add a new connection in the connections's pool.
 
   * `conn`    - Dynamo's connection
+  * `token`   - the token used to identify the connection
   """
-  def add(conn) do
+  def add(conn, token) do
     conn = conn.send_chunked(200)
-    :gen_server.call name(conn), {:add, conn}
+    :gen_server.call name(token), {:add, conn}
   end
 
   @doc """
@@ -67,8 +68,8 @@ defmodule Funnel.Transistor do
     {:reply, conn, state.update(connections: [conn | state.connections])}
   end
 
-  defp name(conn) do
-    binary_to_atom(conn.params[:token])
+  defp name(token) do
+    binary_to_atom(token)
   end
 
   defp write(acc, conn, response, id) do
