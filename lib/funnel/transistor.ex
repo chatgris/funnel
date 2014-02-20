@@ -12,7 +12,7 @@ defmodule Funnel.Transistor do
   Start a new `Funnel.Transistor` actor.
   """
   def start_link(token) do
-    find(name(token))
+    find_or_start(name(token))
   end
 
   @doc """
@@ -24,7 +24,7 @@ defmodule Funnel.Transistor do
   * `body`     - Document in json
   """
   def notify(token, match, body) do
-    {:ok, pid} = find(binary_to_atom(token))
+    {:ok, pid} = find_or_start(binary_to_atom(token))
     :gen_server.cast pid, {:notify, match, body}
   end
 
@@ -84,7 +84,7 @@ defmodule Funnel.Transistor do
     acc
   end
 
-  defp find(name) do
+  defp find_or_start(name) do
     case Process.whereis name do
       nil -> boot(name)
       pid -> {:ok, pid}
