@@ -21,6 +21,7 @@ defmodule Funnel.Supervisor do
     children = [
       worker(Funnel.PercolatorPool, []),
       supervisor(Funnel.Transistors, []),
+      supervisor(Funnel.Caches, []),
       supervisor(Funnel.Dynamo, [])
     ]
 

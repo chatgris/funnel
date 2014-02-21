@@ -11,15 +11,16 @@ defmodule Funnel.Transistor.Cache do
 
   Start a new `Funnel.Transistor` actor.
   """
-  def start_link do
-    :gen_server.start_link(__MODULE__, [], [])
+  def start_link(token) do
+    name(token)
+      |> find_or_start
   end
 
   @doc """
 
   Default values of `Funnel.Transistor.Cache`. An empty list.
   """
-  def init([]) do
+  def init(nil) do
     max = case System.get_env("FUNNEL_CACHE_MAX_ITEMS") do
       nil -> 10
       max -> max
@@ -91,5 +92,16 @@ defmodule Funnel.Transistor.Cache do
 
   defp new_items(state, item) do
     [[id: state.index, item: item] | Enum.take(state.items, state.max - 1)]
+  end
+
+  defp name(token) do
+    binary_to_atom("#{token}_cache")
+  end
+
+  defp find_or_start(name) do
+    case Process.whereis name do
+      nil -> :gen_server.start_link({:local, name}, __MODULE__, nil, [])
+      pid -> {:ok, pid}
+    end
   end
 end
