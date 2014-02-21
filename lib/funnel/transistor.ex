@@ -12,20 +12,21 @@ defmodule Funnel.Transistor do
   Start a new `Funnel.Transistor` actor.
   """
   def start_link(token) do
-    find_or_start(name(token))
+    name(token)
+      |> find_or_start
   end
 
   @doc """
 
   Wrapper around `GenServer`. Notify a user of matches.
 
-  * `token`    - User's token
-  * `match`    - Filter's id
-  * `body`     - Document in json
+  * `token`        - User's token
+  * `id`           - Document's id
+  * `response`     - Document in json
   """
-  def notify(token, match, body) do
+  def notify(token, id, response) do
     {:ok, pid} = find_or_start(binary_to_atom(token))
-    :gen_server.cast pid, {:notify, match, body}
+    :gen_server.cast pid, {:notify, id, response}
   end
 
   @doc """
@@ -52,9 +53,7 @@ defmodule Funnel.Transistor do
 
   Writes on each connections the matched document.
   """
-  def handle_cast({:notify, match, body}, state) do
-    {:ok, response} = JSEX.encode([filter_id: match, body: body])
-    id = Cache.push(state.cache, response)
+  def handle_cast({:notify, id, response}, state) do
     connections = Enum.reduce(state.connections, [], fn(conn, connections) -> write(connections, conn, response, id) end)
     {:noreply, state.update(connections: connections) }
   end
@@ -92,7 +91,7 @@ defmodule Funnel.Transistor do
   end
 
   defp boot(name) do
-    {:ok, cache} = Funnel.Transistor.Cache.start_link
+    {:ok, cache} = Funnel.Caches.add name
     :gen_server.start_link({:local, name}, __MODULE__, cache, [])
   end
 
