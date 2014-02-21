@@ -25,8 +25,9 @@ defmodule Funnel.Transistor do
   * `response`     - Document in json
   """
   def notify(token, id, response) do
-    {:ok, pid} = find_or_start(binary_to_atom(token))
-    :gen_server.cast pid, {:notify, id, response}
+    case Process.whereis(name(token)) do
+      pid -> :gen_server.cast pid, {:notify, id, response}
+    end
   end
 
   @doc """
