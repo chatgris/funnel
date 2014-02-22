@@ -46,6 +46,8 @@ funnel's API.
 
 ``` shell
 curl -H "Content-Type: application/json" -H "Accept: application/json" -XPOST http://localhost:4000/register
+```
+``` json
 {"token":"7d0ac81fbdd646dd9e883e3b007ce58d"}
 ```
 
@@ -64,6 +66,8 @@ Ok, now, let's create an index:
 
 ``` shell
 curl -XPOST "http://localhost:4000/index" -d '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : {"enabled" : false},"properties" :{"field1":{"type":"string","index":"not_analyzed"}}}}}'
+```
+``` json
 {"index_id":"bfa3e5b02e554b458165815968ed490b","body":{"ok":true,"acknowledged":true}}
 ```
 
@@ -80,6 +84,8 @@ elasticsearch query.
 
 ``` shell
 curl -XPOST "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b" -d '{"query" : {"term" : {"field1" : "value1"}}}'
+```
+``` json
 {"filter_id":"dac278b8a6904b469d85df0773d16f5a","body":{"ok":true,"_index":"_percolator","_type":"bfa3e5b02e554b458165815968ed490b_dev","_id":"7d0ac81fbdd646dd9e883e3b007ce58d-dac278b8a6904b469d85df0773d16f5a","_version":1}}
 ```
 
@@ -89,6 +95,8 @@ Filters can be retrieved for a given `index_id` with the following:
 
 ``` shell
 curl -XGET -XGET "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b/filters"
+```
+``` json
 [{"filter_id":"dac278b8a6904b469d85df0773d16f5a","index_id":"bfa3e5b02e554b458165815968ed490b","score":1.4142135}]
 ```
 
@@ -96,6 +104,8 @@ Filters can be retrieved for a given `token` with the following:
 
 ``` shell
 curl -XGET -XGET "http://localhost:4000/filters"
+```
+``` json
 [{"filter_id":"dac278b8a6904b469d85df0773d16f5a","index_id":"bfa3e5b02e554b458165815968ed490b","score":1.4142135}]
 ```
 
