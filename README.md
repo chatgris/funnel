@@ -18,8 +18,7 @@ First, Elixir must be installed, check out the resources section.
 Once Elixir is installed, dependencies must be installed with:
 
 ``` shell
-mix deps.get
-mix
+mix do deps.get, deps.compile
 ```
 
 ## Running things
