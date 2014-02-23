@@ -30,6 +30,7 @@ defmodule EsTest do
     {_, response} = Funnel.Es.register("funnel", "token", body)
     {:ok, body} = JSEX.decode response
     assert size(body["filter_id"]) == 32
+    assert body["index_id"] == "funnel"
     Funnel.Es.unregister("funnel", "token", body["filter_id"])
   end
 

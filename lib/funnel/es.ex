@@ -141,7 +141,7 @@ defmodule Funnel.Es do
     id = "#{token}-#{uuid}"
     percolation = put("/_percolator/#{index_id}_#{Mix.env}/#{id}", body)
     {:ok, body} = JSEX.decode(percolation.body)
-    {:ok, response} = JSEX.encode([filter_id: uuid, body: body])
+    {:ok, response} = JSEX.encode([filter_id: uuid, index_id: index_id, body: body])
     {percolation.status_code, response}
   end
 
