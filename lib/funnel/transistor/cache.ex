@@ -32,10 +32,11 @@ defmodule Funnel.Transistor.Cache do
   Push a new item into the list.
 
   * `pid`    - Cache store
+  * `id`     - The id of the item
   * `item`   - Pretty much anything
   """
-  def push(pid, item) do
-    :gen_server.call pid, {:push, item}
+  def push(pid, id, item) do
+    :gen_server.call pid, {:push, id, item}
   end
 
   @doc """
@@ -44,29 +45,8 @@ defmodule Funnel.Transistor.Cache do
   * `pid`    - Cache store
   * `from`   - Last-Event-Id
   """
-  def list(pid, from) when is_binary(from) do
-    from = binary_to_integer(from)
+  def list(pid, from) do
     :gen_server.call pid, {:list, from}
-  end
-
-  @doc """
-  Returns the items present in cache.
-
-  * `pid`    - Cache store
-  * `from`   - Last-Event-Id
-  """
-  def list(pid, from) when is_integer(from) do
-    :gen_server.call pid, {:list, from}
-  end
-
-  @doc """
-  Returns the items present in cache.
-
-  * `pid`    - Cache store
-  * `from`   - Last-Event-Id
-  """
-  def list(pid, nil) do
-    :gen_server.call pid, {:list, -1}
   end
 
   @doc """
@@ -75,28 +55,42 @@ defmodule Funnel.Transistor.Cache do
   * `pid`    - Cache store
   """
   def list(pid) do
-    :gen_server.call pid, {:list, -1}
+    :gen_server.call pid, {:list, nil}
   end
 
-  def handle_call({:push, item}, _from, state) do
-    state = state.update(index: state.index + 1)
-    {:reply, state.index, state.update(items: new_items(state, item))}
+  def handle_call({:push, id, item}, _from, state) do
+    {:reply, id, state.update(items: new_items(state, id, item))}
   end
 
   def handle_call({:list, last_id}, _from, state) do
-    {:reply, Enum.reverse(selected(state.items, last_id)), state}
+    {:reply, filter(Enum.reverse(state.items), last_id), state}
   end
 
-  defp selected(cache, from) do
-    Enum.filter(cache, fn(item) -> item[:id] > from end)
-  end
-
-  defp new_items(state, item) do
-    [[id: state.index, item: item] | Enum.take(state.items, state.max - 1)]
+  defp new_items(state, id, item) do
+    [[id: id, item: item] | Enum.take(state.items, state.max - 1)]
   end
 
   defp name(token) do
     binary_to_atom("#{token}_cache")
+  end
+
+  defp filter(items, nil) do
+    items
+  end
+
+  defp filter(items, id) do
+    {_status, new_items} = Enum.reduce(items, {false, []}, fn(item, acc) -> filter_match(item, id, acc) end)
+    new_items
+  end
+
+  defp filter_match(item, _id, {true, items}) do
+    {true, [item | items]}
+  end
+  defp filter_match([id: id_item, item: _item], id, _) when id_item == id do
+    {true, []}
+  end
+  defp filter_match(_item, _id, {status, items}) do
+    {status, items}
   end
 
   defp find_or_start(name) do
