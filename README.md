@@ -94,7 +94,7 @@ curl -XPOST "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b" -d '{
 Filters can be retrieved for a given `index_id` with the following:
 
 ``` shell
-curl -XGET -XGET "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b/filters"
+curl -XGET "http://localhost:4000/index/bfa3e5b02e554b458165815968ed490b/filters"
 ```
 ``` json
 [{"filter_id":"dac278b8a6904b469d85df0773d16f5a","index_id":"bfa3e5b02e554b458165815968ed490b","score":1.4142135}]
