@@ -46,7 +46,8 @@ defmodule Funnel.Percolator do
     [token, uuid] = String.split(match, "-")
     {:ok, cache} = Funnel.Caches.add token
     {:ok, response} = JSEX.encode([filter_id: uuid, body: body])
-    id = Funnel.Transistor.Cache.push(cache, response)
+    id = Funnel.Uuid.generate
+    Funnel.Transistor.Cache.push(cache, id, response)
     Funnel.Transistor.notify(token, id, response)
   end
 end
