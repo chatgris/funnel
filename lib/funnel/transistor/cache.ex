@@ -86,9 +86,11 @@ defmodule Funnel.Transistor.Cache do
   defp filter_match(item, _id, {true, items}) do
     {true, [item | items]}
   end
+
   defp filter_match([id: id_item, item: _item], id, _) when id_item == id do
     {true, []}
   end
+
   defp filter_match(_item, _id, {status, items}) do
     {status, items}
   end
