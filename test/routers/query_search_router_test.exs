@@ -1,14 +1,14 @@
-defmodule FilterSearchRouterTest do
+defmodule QuerySearchRouterTest do
   use Funnel.TestCase
   use Dynamo.HTTP.Case
 
-  @endpoint FilterSearchRouter
+  @endpoint QuerySearchRouter
 
-  test "search filters based on index_id" do
+  test "search queries based on index_id" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     {status, response} = Funnel.Es.register("funnel", "tokenrouter", body)
     {:ok, body} = JSEX.decode response
-    uuid = body["filter_id"]
+    uuid = body["query_id"]
     assert status == 201
     Funnel.Es.refresh
     conn = get("/?token=tokenrouter&index_id=funnel")
@@ -18,11 +18,11 @@ defmodule FilterSearchRouterTest do
     Funnel.Es.unregister("funnel", "tokenrouter", uuid)
   end
 
-  test "search filters based on token" do
+  test "search queries based on token" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     {status, response} = Funnel.Es.register("funnel", "tokenroutersearch", body)
     {:ok, body} = JSEX.decode response
-    uuid = body["filter_id"]
+    uuid = body["query_id"]
     assert status == 201
     Funnel.Es.refresh
     conn = get("/?token=tokenroutersearch")

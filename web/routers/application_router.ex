@@ -7,7 +7,7 @@ defmodule ApplicationRouter do
   forward "/feeding",  to: FeedingRouter
   forward "/river",    to: RiverRouter
   forward "/index",    to: IndexRouter
-  forward "/filters",  to: FilterSearchRouter
+  forward "/queries",  to: QuerySearchRouter
 
   get "/" do
     {:ok, payload} = JSEX.encode [message: "Welcome to funnel"]

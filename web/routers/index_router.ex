@@ -3,7 +3,7 @@ defmodule IndexRouter do
   filter JsonHeader
   filter TokenFilter
 
-  forward "/:index_id", to: FilterRouter
+  forward "/:index_id", to: QueryRouter
   prepare do: conn.fetch(:body)
 
   post "/" do
