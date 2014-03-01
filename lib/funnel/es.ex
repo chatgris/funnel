@@ -4,12 +4,12 @@ defmodule Funnel.Es do
   Interface to Elasticsearch:
 
   * create/delete indexes
-  * register/unregister filters
+  * register/unregister queries
   * percolate
   """
 
   use HTTPotion.Base
-  alias Funnel.FilterSearch
+  alias Funnel.QuerySearch
 
   @doc """
 
@@ -23,7 +23,7 @@ defmodule Funnel.Es do
 
   @doc """
 
-  Returns a list of filter_id matched by the Elasticsearch percolation.
+  Returns a list of query_id matched by the Elasticsearch percolation.
   """
   def percolate(index_id, body) do
     percolation = post("/#{namespace(index_id)}/message/_percolate", body)
@@ -33,11 +33,11 @@ defmodule Funnel.Es do
 
   @doc """
 
-  Register a filter against an Elasticsearch index.
+  Register a query against an Elasticsearch index.
 
   * `index_id` - Index's id
   * `token`    - User's token
-  * `body`     - Filter in json
+  * `body`     - Query in json
   """
   def register(index_id, token, body) do
     do_register(index_id, token, Funnel.Uuid.generate, body)
@@ -45,12 +45,12 @@ defmodule Funnel.Es do
 
   @doc """
 
-  Update a filter, or create a filter with a specific id.
+  Update a query, or create a query with a specific id.
 
   * `index_id` - Index's id
   * `token`    - User's token
-  * `uuid`     - Filter's id
-  * `body`     - Filter in json
+  * `uuid`     - Query's id
+  * `body`     - Query in json
   """
   def register(index_id, token, uuid, body) do
     do_register(index_id, token, uuid, body)
@@ -58,7 +58,7 @@ defmodule Funnel.Es do
 
   @doc """
 
-  Remove all filters from a given index.
+  Remove all queries from a given index.
 
   * `index_id` - Index's id
   """
@@ -68,11 +68,11 @@ defmodule Funnel.Es do
 
   @doc """
 
-  Remove a given filter from a given index.
+  Remove a given query from a given index.
 
   * `index_id` - Index's id
   * `token`    - User's token
-  * `uuid`     - Filter's id
+  * `uuid`     - Query's id
   """
   def unregister(index_id, token, id) do
     do_unregister("/_percolator/#{namespace(index_id)}/#{token}-#{id}")
@@ -80,17 +80,17 @@ defmodule Funnel.Es do
 
   @doc """
 
-  Returns a list of filter for a given token.
+  Returns a list of query for a given token.
 
   * `token`     - User's token. Mandatory.
-  * `filter_id` - Filter's id. Optional, default to "*".
+  * `query_id` - Query's id. Optional, default to "*".
   * `index_id`  - Index's id. Optional, default to "*".
   * `from`      - Used for pagination. Optional, default to 0.
   * `size`      - Maximum size of returned results. Optional, default to 0.
   """
-  def find(token, search_filter \\ HashDict.new) do
-    post("/_percolator/_search", FilterSearch.query(token, search_filter))
-      |> FilterSearch.response
+  def find(token, search_query \\ HashDict.new) do
+    post("/_percolator/_search", QuerySearch.query(token, search_query))
+      |> QuerySearch.response
   end
 
   @doc """
@@ -141,7 +141,7 @@ defmodule Funnel.Es do
     id = "#{token}-#{uuid}"
     percolation = put("/_percolator/#{index_id}_#{Mix.env}/#{id}", body)
     {:ok, body} = JSEX.decode(percolation.body)
-    {:ok, response} = JSEX.encode([filter_id: uuid, index_id: index_id, body: body])
+    {:ok, response} = JSEX.encode([query_id: uuid, index_id: index_id, body: body])
     {percolation.status_code, response}
   end
 

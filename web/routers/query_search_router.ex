@@ -1,4 +1,4 @@
-defmodule FilterSearchRouter do
+defmodule QuerySearchRouter do
   use Dynamo.Router
   filter JsonHeader
   filter TokenFilter

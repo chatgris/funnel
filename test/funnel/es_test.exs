@@ -8,30 +8,30 @@ defmodule EsTest do
     {status, response} = Funnel.Es.register("funnel", "token", body)
     {:ok, body} = JSEX.decode response
     assert status == 201
-    Funnel.Es.unregister("funnel", "token", body["filter_id"])
+    Funnel.Es.unregister("funnel", "token", body["query_id"])
   end
 
   test "update a query creation" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     {status, response} = Funnel.Es.register("funnel", "token", body)
     {:ok, body} = JSEX.decode response
-    uuid = body["filter_id"]
+    uuid = body["query_id"]
     assert status == 201
 
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
     {status, response} = Funnel.Es.register("funnel", "token", uuid, body)
     {:ok, body} = JSEX.decode response
     assert status == 200
-    Funnel.Es.unregister("funnel", "token", body["filter_id"])
+    Funnel.Es.unregister("funnel", "token", body["query_id"])
   end
 
   test "returns a body on query creation" do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     {_, response} = Funnel.Es.register("funnel", "token", body)
     {:ok, body} = JSEX.decode response
-    assert size(body["filter_id"]) == 32
+    assert size(body["query_id"]) == 32
     assert body["index_id"] == "funnel"
-    Funnel.Es.unregister("funnel", "token", body["filter_id"])
+    Funnel.Es.unregister("funnel", "token", body["query_id"])
   end
 
   test "returns a 400 on bad payload" do
@@ -44,7 +44,7 @@ defmodule EsTest do
     message = '{"doc" : {"message" : "this new elasticsearch percolator feature is nice, borat style"}}'
     {_, response} = Funnel.Es.register("funnel", "token", body)
     {:ok, body} = JSEX.decode response
-    uuid = body["filter_id"]
+    uuid = body["query_id"]
     Funnel.Es.refresh
     assert Funnel.Es.percolate("funnel", message) == ["token-#{uuid}"]
     Funnel.Es.refresh
@@ -69,17 +69,17 @@ defmodule EsTest do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     {status, response} = Funnel.Es.register("funnel", "tokensecret", body)
     {:ok, body} = JSEX.decode response
-    uuid = body["filter_id"]
+    uuid = body["query_id"]
     assert status == 201
     Funnel.Es.refresh
     hash = HashDict.new
-    hash = Dict.put(hash, :filter_id, uuid)
+    hash = Dict.put(hash, :query_id, uuid)
     {status, response} = Funnel.Es.find("tokensecret", hash)
     {:ok, response} = JSEX.decode response
     assert status == 200
     assert Enum.count(response) == 1
     item = Enum.at(response, 0)
-    assert item["filter_id"] == uuid
+    assert item["query_id"] == uuid
     assert item["index_id"] == "funnel"
     Funnel.Es.unregister("funnel", "tokensecret", uuid)
   end
@@ -88,13 +88,13 @@ defmodule EsTest do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     {status, response} = Funnel.Es.register("funnel", "tokenseveral", body)
     {:ok, body} = JSEX.decode response
-    uuid = body["filter_id"]
+    uuid = body["query_id"]
     assert status == 201
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
     {status, response} = Funnel.Es.register("funnel", "tokenseveral", body)
     assert status == 201
     {:ok, body} = JSEX.decode response
-    uuid2 = body["filter_id"]
+    uuid2 = body["query_id"]
     Funnel.Es.refresh
     {status, response} = Funnel.Es.find("tokenseveral")
     {:ok, response} = JSEX.decode response
@@ -108,13 +108,13 @@ defmodule EsTest do
     body = '{"query" : {"term" : {"field1" : "value1"}}}'
     {status, response} = Funnel.Es.register("index1", "tokenindex", body)
     {:ok, body} = JSEX.decode response
-    uuid = body["filter_id"]
+    uuid = body["query_id"]
     assert status == 201
     body = '{"query" : {"term" : {"field1" : "value2"}}}'
     {status, response} = Funnel.Es.register("index2", "tokenindex", body)
     assert status == 201
     {:ok, body} = JSEX.decode response
-    uuid2 = body["filter_id"]
+    uuid2 = body["query_id"]
     Funnel.Es.refresh
     hash = HashDict.new
     hash = Dict.put(hash, :index_id, "index1")

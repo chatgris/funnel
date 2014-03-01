@@ -1,9 +1,9 @@
-defmodule FilterRouter do
+defmodule QueryRouter do
   use Dynamo.Router
   filter JsonHeader
   filter TokenFilter
   forward "/feeding", to: FeedingRouter
-  forward "/filters", to: FilterSearchRouter
+  forward "/queries", to: QuerySearchRouter
 
   post "/" do
     {status_code, response} = Funnel.Es.register conn.params[:index_id], conn.assigns[:token], conn.req_body
