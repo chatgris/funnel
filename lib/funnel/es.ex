@@ -37,10 +37,10 @@ defmodule Funnel.Es do
 
   * `index_id` - Index's id
   * `token`    - User's token
-  * `body`     - Query in json
+  * `query`    - Query in json
   """
-  def register(index_id, token, body) do
-    do_register(index_id, token, Funnel.Uuid.generate, body)
+  def register(index_id, token, query) do
+    do_register(index_id, token, Funnel.Uuid.generate, query)
   end
 
   @doc """
@@ -50,10 +50,10 @@ defmodule Funnel.Es do
   * `index_id` - Index's id
   * `token`    - User's token
   * `uuid`     - Query's id
-  * `body`     - Query in json
+  * `query`    - Query in json
   """
-  def register(index_id, token, uuid, body) do
-    do_register(index_id, token, uuid, body)
+  def register(index_id, token, uuid, query) do
+    do_register(index_id, token, uuid, query)
   end
 
   @doc """
