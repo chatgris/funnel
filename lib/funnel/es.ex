@@ -40,7 +40,7 @@ defmodule Funnel.Es do
   * `query`    - Query in json
   """
   def register(index_id, token, query) do
-    do_register(index_id, token, Funnel.Uuid.generate, query)
+    register(index_id, token, Funnel.Uuid.generate, query)
   end
 
   @doc """
@@ -53,7 +53,11 @@ defmodule Funnel.Es do
   * `query`    - Query in json
   """
   def register(index_id, token, uuid, query) do
-    do_register(index_id, token, uuid, query)
+    id = "#{token}-#{uuid}"
+    percolation = put("/_percolator/#{index_id}_#{Mix.env}/#{id}", query)
+    {:ok, body} = JSEX.decode(percolation.body)
+    {:ok, response} = JSEX.encode([query_id: uuid, index_id: index_id, body: body])
+    {percolation.status_code, response}
   end
 
   @doc """
@@ -135,14 +139,6 @@ defmodule Funnel.Es do
   defp do_unregister(path) do
     del = delete path
     {del.status_code, del.body}
-  end
-
-  defp do_register(index_id, token, uuid, body) do
-    id = "#{token}-#{uuid}"
-    percolation = put("/_percolator/#{index_id}_#{Mix.env}/#{id}", body)
-    {:ok, body} = JSEX.decode(percolation.body)
-    {:ok, response} = JSEX.encode([query_id: uuid, index_id: index_id, body: body])
-    {percolation.status_code, response}
   end
 
   def namespace do
