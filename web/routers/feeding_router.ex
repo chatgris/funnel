@@ -6,6 +6,6 @@ defmodule FeedingRouter do
 
   post "/" do
     Funnel.PercolatorPool.percolate conn.params[:index_id], conn.req_body
-    conn.resp 204, ""
+    conn.resp 202, ""
   end
 end
