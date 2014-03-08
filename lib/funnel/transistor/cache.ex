@@ -5,6 +5,9 @@ defmodule Funnel.Transistor.Cache do
   """
 
   use GenServer.Behaviour
+
+  defrecord Funnel.Transistor.CacheState, items: [], max: 10
+
   alias Funnel.Transistor.CacheState
 
   @doc """
