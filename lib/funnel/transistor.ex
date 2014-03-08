@@ -5,6 +5,10 @@ defmodule Funnel.Transistor do
   """
   use GenServer.Behaviour
   alias Funnel.Transistor.Cache
+  alias Funnel.Caches
+
+  defrecord Funnel.TransistorState, cache: nil, connections: []
+
   alias Funnel.TransistorState
 
   @doc """
@@ -92,7 +96,7 @@ defmodule Funnel.Transistor do
   end
 
   defp boot(name) do
-    {:ok, cache} = Funnel.Caches.add name
+    {:ok, cache} = Caches.add name
     :gen_server.start_link({:local, name}, __MODULE__, cache, [])
   end
 
