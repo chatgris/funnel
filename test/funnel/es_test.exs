@@ -17,6 +17,22 @@ defmodule EsTest do
     body
   end
 
+  def assert_query_find(index) do
+    hash = HashDict.new
+    hash = Dict.put(hash, :index_id, index)
+    {status, response} = Funnel.Es.find("token", hash)
+    {:ok, response} = JSEX.decode response
+    assert status == 200
+    response
+  end
+
+  def assert_query_find do
+    {status, response} = Funnel.Es.find("token")
+    {:ok, response} = JSEX.decode response
+    assert status == 200
+    response
+  end
+
   test "returns a 201 on query creation" do
     body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')
     Funnel.Es.unregister("funnel", "token", body["query_id"])
@@ -81,9 +97,7 @@ defmodule EsTest do
     uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')["query_id"]
     uuid2 = assert_query_creation('{"query" : {"term" : {"field1" : "value2"}}}')["query_id"]
     Funnel.Es.refresh
-    {status, response} = Funnel.Es.find("token")
-    {:ok, response} = JSEX.decode response
-    assert status == 200
+    response = assert_query_find
     assert Enum.count(response) == 2
     Funnel.Es.unregister("funnel", "token", uuid)
     Funnel.Es.unregister("funnel", "token", uuid2)
@@ -93,17 +107,9 @@ defmodule EsTest do
     uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', "index1")["query_id"]
     uuid2 = assert_query_creation('{"query" : {"term" : {"field1" : "value2"}}}', "index2")["query_id"]
     Funnel.Es.refresh
-    hash = HashDict.new
-    hash = Dict.put(hash, :index_id, "index1")
-    {status, response} = Funnel.Es.find("token", hash)
-    {:ok, response} = JSEX.decode response
-    assert status == 200
+    response = assert_query_find("index1")
     assert Enum.count(response) == 1
-    hash = HashDict.new
-    hash = Dict.put(hash, :index_id, "index2")
-    {status, response} = Funnel.Es.find("token", hash)
-    {:ok, response} = JSEX.decode response
-    assert status == 200
+    response = assert_query_find("index2")
     assert Enum.count(response) == 1
     Funnel.Es.unregister("index1", "token", uuid)
     Funnel.Es.unregister("index2", "token", uuid2)
