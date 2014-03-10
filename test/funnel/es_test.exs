@@ -79,11 +79,7 @@ defmodule EsTest do
 
   test "find several queries based on token" do
     uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')["query_id"]
-    body = '{"query" : {"term" : {"field1" : "value2"}}}'
-    {status, response} = Funnel.Es.register("funnel", "token", body)
-    assert status == 201
-    {:ok, body} = JSEX.decode response
-    uuid2 = body["query_id"]
+    uuid2 = assert_query_creation('{"query" : {"term" : {"field1" : "value2"}}}')["query_id"]
     Funnel.Es.refresh
     {status, response} = Funnel.Es.find("token")
     {:ok, response} = JSEX.decode response
