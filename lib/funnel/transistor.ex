@@ -20,8 +20,30 @@ defmodule Funnel.Transistor do
       |> find_or_start
   end
 
-  @doc """
 
+  @doc """
+  Wrapper around `GenServer`. Notify a user of matches.
+
+  * `token`        - User's token
+  * `id`           - Document's id
+  * `response`     - Document in json
+  """
+  def notify(pid, id, response) when is_pid(pid) do
+    :gen_server.cast pid, {:notify, id, response}
+  end
+
+
+  @doc """
+  Wrapper around `GenServer`. Notify a user of matches.
+
+  * `token`        - User's token
+  * `id`           - Document's id
+  * `response`     - Document in json
+  """
+  def notify(nil, _id, _response) do
+  end
+
+  @doc """
   Wrapper around `GenServer`. Notify a user of matches.
 
   * `token`        - User's token
@@ -29,9 +51,7 @@ defmodule Funnel.Transistor do
   * `response`     - Document in json
   """
   def notify(token, id, response) do
-    case Process.whereis(name(token)) do
-      pid -> :gen_server.cast pid, {:notify, id, response}
-    end
+    notify Process.whereis(name(token)), id, response
   end
 
   @doc """
