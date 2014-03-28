@@ -1,0 +1,26 @@
+# 127.0.0.1 funnel.dev
+#
+# /etc/hosts
+
+upstream funnel {
+  server 127.0.0.1:4000;
+}
+
+server {
+  server_name       funnel.dev;
+
+  location / {
+    try_files $uri @app ;
+  }
+
+  location @app {
+    proxy_pass_header Server;
+    proxy_set_header  Host            $http_host;
+    proxy_set_header  X-Real-IP       $remote_addr;
+    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_redirect    off;
+
+    proxy_pass http://funnel;
+  }
+
+}
