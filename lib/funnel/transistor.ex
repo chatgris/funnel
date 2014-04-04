@@ -61,9 +61,8 @@ defmodule Funnel.Transistor do
   * `conn`    - Dynamo's connection
   * `token`   - the token used to identify the connection
   """
-  def add(conn, token) do
-    conn = conn.send_chunked(200)
-    :gen_server.call name(token), {:add, conn}
+  def add(conn, token, last_id \\ nil) do
+    :gen_server.call name(token), {:add, conn, last_id}
   end
 
   @doc """
@@ -87,8 +86,8 @@ defmodule Funnel.Transistor do
 
   Add a connection to the connections's pool.
   """
-  def handle_call({:add, conn}, _from, state) do
-    conn = write_from_cache(conn, state.cache)
+  def handle_call({:add, conn, last_id}, _from, state) do
+    conn = write_from_cache(conn, state.cache, last_id)
     {:reply, conn, state.update(connections: [conn | state.connections])}
   end
 
@@ -120,8 +119,8 @@ defmodule Funnel.Transistor do
     :gen_server.start_link({:local, name}, __MODULE__, cache, [])
   end
 
-  defp write_from_cache(conn, cache) do
-    Enum.reduce(Cache.list(cache, conn.params[:last_id]), conn, &write/2)
+  defp write_from_cache(conn, cache, last_id) do
+    Enum.reduce(Cache.list(cache, last_id), conn, &write/2)
   end
 
   defp write(item, conn) do
