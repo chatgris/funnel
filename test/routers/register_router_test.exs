@@ -1,4 +1,4 @@
-defmodule ReisterRouterTest do
+defmodule RegisterRouterTest do
   use Funnel.TestCase, async: true
   use Dynamo.HTTP.Case
 
