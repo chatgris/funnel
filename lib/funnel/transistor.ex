@@ -96,7 +96,7 @@ defmodule Funnel.Transistor do
   end
 
   defp write(connections, conn, response, id) do
-    result_write connections, conn.chunk message(id, response)
+    result_write connections, conn.send {:chunk, message(id, response)}
   end
 
   defp result_write(connections, {:ok, conn}) do
@@ -124,11 +124,11 @@ defmodule Funnel.Transistor do
   end
 
   defp write(item, conn) do
-    {:ok, conn} = conn.chunk message(item[:id], item[:item])
+    send conn, [chunk: message(item[:id], item[:item])]
     conn
   end
 
   defp message(id, body) do
-    "id:#{id}\ndata: #{body}\n\n"
+    "id: #{id}\ndata: #{body}\n\n"
   end
 end

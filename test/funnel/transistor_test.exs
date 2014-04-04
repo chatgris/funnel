@@ -9,4 +9,18 @@ defmodule Funnel.TransistorTest do
     {:ok, transistor} = Funnel.Transistor.start_link(token)
     assert Process.alive?(transistor)
   end
+
+  test "send message from the cache" do
+    token = "secrettoken"
+
+    {:ok, cache} = Funnel.Caches.add token
+    Funnel.Transistor.Cache.push(cache, 1, "plop")
+    Funnel.Transistor.Cache.push(cache, 2, "plop")
+
+    {:ok, transistor} = Funnel.Transistor.start_link(token)
+    Funnel.Transistor.add(self, token, 1)
+
+    refute_receive([chunk: "id: 1\ndata: plop\n\n"])
+    assert_received [chunk: "id: 2\ndata: plop\n\n"]
+  end
 end
