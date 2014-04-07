@@ -23,4 +23,14 @@ defmodule Funnel.TransistorTest do
     refute_receive({:chunk, [id: 1, body: "plop"]})
     assert_received({:chunk, [id: 2, body: "plop"]})
   end
+
+  test "send new message" do
+    token = "secrettoken"
+
+    {:ok, transistor} = Funnel.Transistor.start_link(token)
+    Funnel.Transistor.add(self, token, 1)
+    Funnel.Transistor.notify(token, 2, "plup")
+
+    assert_receive({:chunk, [id: 2, body: "plup"]})
+  end
 end
