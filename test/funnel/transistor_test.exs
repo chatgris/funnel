@@ -17,7 +17,7 @@ defmodule Funnel.TransistorTest do
     Funnel.Transistor.Cache.push(cache, 1, "plop")
     Funnel.Transistor.Cache.push(cache, 2, "plop")
 
-    {:ok, transistor} = Funnel.Transistor.start_link(token)
+    {:ok, _transistor} = Funnel.Transistor.start_link(token)
     Funnel.Transistor.add(self, token, 1)
 
     refute_receive({:chunk, [id: 1, body: "plop"]})
@@ -27,7 +27,7 @@ defmodule Funnel.TransistorTest do
   test "send new message" do
     token = "secrettoken"
 
-    {:ok, transistor} = Funnel.Transistor.start_link(token)
+    {:ok, _transistor} = Funnel.Transistor.start_link(token)
     Funnel.Transistor.add(self, token, 1)
     Funnel.Transistor.notify(token, 2, "plup")
 
