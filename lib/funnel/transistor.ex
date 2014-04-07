@@ -124,7 +124,7 @@ defmodule Funnel.Transistor do
   end
 
   defp write(item, conn) do
-    send conn, [chunk: message(item[:id], item[:item])]
+    send conn, {:chunk, message(item[:id], item[:item])}
     conn
   end
 
