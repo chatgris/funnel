@@ -20,7 +20,7 @@ defmodule Funnel.TransistorTest do
     {:ok, transistor} = Funnel.Transistor.start_link(token)
     Funnel.Transistor.add(self, token, 1)
 
-    refute_receive([chunk: "id: 1\ndata: plop\n\n"])
-    assert_received [chunk: "id: 2\ndata: plop\n\n"]
+    refute_receive([chunk: [id: 1, body: "plop"]])
+    assert_received [chunk: [id: 2, body: "plop"]]
   end
 end

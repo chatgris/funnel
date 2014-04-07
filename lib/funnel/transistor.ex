@@ -129,6 +129,6 @@ defmodule Funnel.Transistor do
   end
 
   defp message(id, body) do
-    "id: #{id}\ndata: #{body}\n\n"
+    [id: id, body: body]
   end
 end
