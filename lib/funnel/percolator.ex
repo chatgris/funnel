@@ -43,11 +43,17 @@ defmodule Funnel.Percolator do
   end
 
   defp notify(match, body) do
-    [token, uuid] = String.split(match, "-")
+    [token, uuid] = decode_match(match)
+    id = Funnel.Uuid.generate
+
     {:ok, cache} = Funnel.Caches.add token
     {:ok, response} = JSEX.encode([query_id: uuid, body: body])
-    id = Funnel.Uuid.generate
+
     Funnel.Transistor.Cache.push(cache, id, response)
     Funnel.Transistor.notify(token, id, response)
+  end
+
+  defp decode_match(match) do
+    String.split(match, "-")
   end
 end
