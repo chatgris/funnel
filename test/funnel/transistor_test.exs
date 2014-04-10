@@ -21,7 +21,7 @@ defmodule Funnel.TransistorTest do
     Funnel.Transistor.add(self, token, 1)
 
     refute_receive({:chunk, [id: 1, body: "plop"]})
-    assert_received({:chunk, [id: 2, body: "plop"]})
+    assert_receive({:chunk, [id: 2, body: "plop"]})
   end
 
   test "send new message" do
