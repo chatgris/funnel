@@ -38,8 +38,9 @@ defmodule Funnel.Transistor do
 
   Wrapper around `GenServer`. Add a new connection in the connections's pool.
 
-  * `conn`    - Dynamo's connection
+  * `conn`    - Process id
   * `token`   - the token used to identify the connection
+  * `last_id` - the last id received in the connection
   """
   def add(conn, token, last_id \\ nil) do
     :gen_server.call name(token), {:add, conn, last_id}
@@ -57,9 +58,9 @@ defmodule Funnel.Transistor do
 
   Writes on each connections the matched document.
   """
-  def handle_cast({:notify, id, response}, state) do
-    connections = Enum.reduce(state.connections, [], fn(conn, connections) -> write(connections, conn, response, id) end)
-    {:noreply, state.update(connections: connections) }
+  def handle_cast({:notify, id, body}, state) do
+    Enum.each(state.connections, fn(conn) -> write(conn, id, body) end)
+    {:noreply, state }
   end
 
   @doc """
@@ -67,28 +68,12 @@ defmodule Funnel.Transistor do
   Add a connection to the connections's pool.
   """
   def handle_call({:add, conn, last_id}, _from, state) do
-    conn = write_from_cache(conn, state.cache, last_id)
+    write_from_cache(conn, state.cache, last_id)
     {:reply, conn, state.update(connections: [conn | state.connections])}
   end
 
   defp name(token) do
     binary_to_atom(token)
-  end
-
-  defp write(connections, conn, response, id) do
-    result_write connections, send(conn, {:chunk, message(id, response)})
-  end
-
-  defp result_write(connections, {:ok, conn}) do
-    [conn | connections]
-  end
-
-  defp result_write(connections, {:error, _}) do
-    connections
-  end
-
-  defp result_write(connections, _) do
-    connections
   end
 
   defp find_or_start(name) do
@@ -107,9 +92,12 @@ defmodule Funnel.Transistor do
     Enum.reduce(Cache.list(cache, last_id), conn, &write/2)
   end
 
+  defp write(conn, id, body) do
+    send(conn, {:chunk, message(id, body)})
+  end
+
   defp write(item, conn) do
-    send conn, {:chunk, message(item[:id], item[:item])}
-    conn
+    write(conn, item[:id], item[:item])
   end
 
   defp message(id, body) do
