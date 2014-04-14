@@ -1,9 +1,9 @@
 language: erlang
 otp_release:
-  - R16B
+  - 17.0-rc1
 before_install:
   - git clone https://github.com/elixir-lang/elixir
-  - cd elixir && git checkout v0.12.5 && make && cd ..
+  - cd elixir && make && cd ..
 before_script: "export PATH=`pwd`/elixir/bin:$PATH"
 script: "MIX_ENV=test mix do deps.get, test"
 services:
