@@ -38,7 +38,7 @@ defmodule Funnel.Transistor.CacheTest do
   end
 
   test "return a list from an id which is not an integer" do
-    {:ok, pid} = Cache.start_link("items")
+    {:ok, pid} = Cache.start_link("items2")
     Cache.push(pid, "toto", "Hello")
     Cache.push(pid, "roger", "Bye")
     items = Cache.list(pid, "toto")
