@@ -21,7 +21,7 @@ defmodule Funnel.Mixfile do
   defp deps do
     [ { :cowboy,      github: "extend/cowboy" },
       { :httpotion,   github: "chatgris/httpotion" },
-      { :jsex,        github: "igas/jsex", branch: "elixir13" },
+      { :jsex,        github: "talentdeficit/jsex" },
       { :dynamo,      github: "dynamo/dynamo" },
       { :uuid,        github: "travis/erlang-uuid" },
       { :ex_doc,      github: "elixir-lang/ex_doc" },
