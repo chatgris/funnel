@@ -1,6 +1,6 @@
 %{"cowboy": {:git, "git://github.com/extend/cowboy.git", "df818625545d565b8b76fbc445063a4822114b93", []},
   "cowlib": {:git, "git://github.com/extend/cowlib.git", "63298e8e160031a70efff86a1acde7e7db1fcda6", [ref: "0.4.0"]},
-  "dynamo": {:git, "git://github.com/dynamo/dynamo.git", "ec8669b9fba38de9fbea558c050072aa74f0d831", [branch: "0.13"]},
+  "dynamo": {:git, "git://github.com/dynamo/dynamo.git", "6b6c51633da88d4ac7541fee1c1407c8685543c4", []},
   "ex_doc": {:git, "git://github.com/elixir-lang/ex_doc.git", "c14203bfca186f68ff178e5ada9af4f5fb37e205", []},
   "httpotion": {:git, "git://github.com/chatgris/httpotion.git", "af92f484276c5b085a278db48c9dbfccb29f4f4b", []},
   "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "7871e2ebe8811efb64e1917e2de455fa87e8dfe3", [tag: "v4.1.0"]},
