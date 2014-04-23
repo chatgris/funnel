@@ -22,7 +22,7 @@ defmodule Funnel.Mixfile do
     [ { :cowboy,      github: "extend/cowboy" },
       { :httpotion,   github: "chatgris/httpotion" },
       { :jsex,        github: "igas/jsex", branch: "elixir13" },
-      { :dynamo,      github: "dynamo/dynamo", branch: "0.13" },
+      { :dynamo,      github: "dynamo/dynamo" },
       { :uuid,        github: "travis/erlang-uuid" },
       { :ex_doc,      github: "elixir-lang/ex_doc" },
       { :poolboy,     github: "devinus/poolboy"}
