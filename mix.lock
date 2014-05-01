@@ -2,7 +2,7 @@
   "cowlib": {:git, "git://github.com/extend/cowlib.git", "63298e8e160031a70efff86a1acde7e7db1fcda6", [ref: "0.4.0"]},
   "dynamo": {:git, "git://github.com/dynamo/dynamo.git", "d5c71e0023f9d85c796f6069a1d678dddd285cd0", []},
   "ex_doc": {:git, "git://github.com/elixir-lang/ex_doc.git", "c14203bfca186f68ff178e5ada9af4f5fb37e205", []},
-  "httpotion": {:git, "git://github.com/chatgris/httpotion.git", "af92f484276c5b085a278db48c9dbfccb29f4f4b", []},
+  "httpotion": {:git, "git://github.com/myfreeweb/httpotion.git", "3346c05b5ba31f8d8b60090341e155f06c7dbc33", []},
   "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "7871e2ebe8811efb64e1917e2de455fa87e8dfe3", [tag: "v4.1.0"]},
   "jsex": {:git, "git://github.com/talentdeficit/jsex.git", "3837aba229a47d959d7826f2f49b001cc911883d", []},
   "jsx": {:git, "git://github.com/talentdeficit/jsx.git", "8e150dafb9787dd6b608e912c1b52575b06fe7f8", [tag: "v2.0"]},
