@@ -7,7 +7,9 @@ defmodule Funnel.Transistor do
   alias Funnel.Transistor.Cache
   alias Funnel.Caches
 
-  defrecord Funnel.TransistorState, cache: nil, connections: []
+  defmodule Funnel.TransistorState do
+    defstruct cache: nil, connections: []
+  end
 
   alias Funnel.TransistorState
 
@@ -51,16 +53,22 @@ defmodule Funnel.Transistor do
   Default values of `Funnel.Transistor`. An empty pool of connections.
   """
   def init(cache) do
-    { :ok, TransistorState.new(cache: cache) }
+    {:ok, %TransistorState{cache: cache}}
   end
 
   @doc """
 
   Writes on each connections the matched document.
   """
+<<<<<<< HEAD
   def handle_cast({:notify, id, body}, state) do
     Enum.each(state.connections, fn(conn) -> write(conn, id, body) end)
     {:noreply, state }
+=======
+  def handle_cast({:notify, id, response}, state) do
+    connections = Enum.reduce(state.connections, [], fn(conn, connections) -> write(connections, conn, response, id) end)
+    {:noreply, Map.update!(state, :connections, fn(_) -> connections end) }
+>>>>>>> b9cef58... Migrate to Map
   end
 
   @doc """
@@ -68,8 +76,13 @@ defmodule Funnel.Transistor do
   Add a connection to the connections's pool.
   """
   def handle_call({:add, conn, last_id}, _from, state) do
+<<<<<<< HEAD
     write_from_cache(conn, state.cache, last_id)
     {:reply, conn, state.update(connections: [conn | state.connections])}
+=======
+    conn = write_from_cache(conn, state.cache, last_id)
+    {:reply, conn, Map.update!(state, :connections, fn(_) -> [conn | state.connections] end) }
+>>>>>>> b9cef58... Migrate to Map
   end
 
   defp name(token) do
