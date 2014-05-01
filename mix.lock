@@ -4,7 +4,7 @@
   "ex_doc": {:git, "git://github.com/elixir-lang/ex_doc.git", "c14203bfca186f68ff178e5ada9af4f5fb37e205", []},
   "httpotion": {:git, "git://github.com/myfreeweb/httpotion.git", "3346c05b5ba31f8d8b60090341e155f06c7dbc33", []},
   "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "7871e2ebe8811efb64e1917e2de455fa87e8dfe3", [tag: "v4.1.0"]},
-  "jsex": {:git, "git://github.com/talentdeficit/jsex.git", "03ad4ff0967331afd01464857d41e5e497ed198c", []},
+  "jsex": {:git, "git://github.com/talentdeficit/jsex.git", "01073fd976397d4140032b62ae64f15d1442ea18", [branch: "develop"]},
   "jsx": {:git, "git://github.com/talentdeficit/jsx.git", "507fa4c41db33c81e925ab53f4d789d234aaff2f", [tag: "v2.0.1"]},
   "mime": {:git, "git://github.com/dynamo/mime.git", "db84370c53a67a7e58a4d0cfb026f4edc64a9367", []},
   "poolboy": {:git, "git://github.com/devinus/poolboy.git", "db4df155c088731ce07858d930c800d41c3e907e", []},
