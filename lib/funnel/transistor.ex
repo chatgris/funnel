@@ -7,7 +7,9 @@ defmodule Funnel.Transistor do
   alias Funnel.Transistor.Cache
   alias Funnel.Caches
 
-  defrecord Funnel.TransistorState, cache: nil, connections: []
+  defmodule Funnel.TransistorState do
+    defstruct cache: nil, connections: []
+  end
 
   alias Funnel.TransistorState
 
@@ -51,7 +53,7 @@ defmodule Funnel.Transistor do
   Default values of `Funnel.Transistor`. An empty pool of connections.
   """
   def init(cache) do
-    { :ok, TransistorState.new(cache: cache) }
+    {:ok, %TransistorState{cache: cache}}
   end
 
   @doc """
@@ -69,7 +71,7 @@ defmodule Funnel.Transistor do
   """
   def handle_call({:add, conn, last_id}, _from, state) do
     write_from_cache(conn, state.cache, last_id)
-    {:reply, conn, state.update(connections: [conn | state.connections])}
+    {:reply, conn, Map.update!(state, :connections, fn(_) -> [conn | state.connections] end) }
   end
 
   defp name(token) do

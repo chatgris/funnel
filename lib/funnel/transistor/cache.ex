@@ -6,7 +6,9 @@ defmodule Funnel.Transistor.Cache do
 
   use GenServer.Behaviour
 
-  defrecord Funnel.Transistor.CacheState, items: [], max: 10
+  defmodule Funnel.Transistor.CacheState do
+    defstruct items: [], max: 10
+  end
 
   alias Funnel.Transistor.CacheState
 
@@ -28,7 +30,7 @@ defmodule Funnel.Transistor.Cache do
       nil -> 10
       max -> max
     end
-    {:ok, CacheState.new(max: max)}
+    {:ok, %CacheState{max: max}}
   end
 
   @doc """
@@ -62,7 +64,7 @@ defmodule Funnel.Transistor.Cache do
   end
 
   def handle_call({:push, id, item}, _from, state) do
-    {:reply, id, state.update(items: new_items(state, id, item))}
+    {:reply, id, Map.update!(state, :items, fn(_) -> new_items(state, id, item) end)}
   end
 
   def handle_call({:list, last_id}, _from, state) do
