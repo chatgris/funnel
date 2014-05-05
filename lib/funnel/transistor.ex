@@ -6,6 +6,7 @@ defmodule Funnel.Transistor do
   use GenServer.Behaviour
   alias Funnel.Transistor.Cache
   alias Funnel.Caches
+  alias Funnel.Transport
 
   defmodule Funnel.TransistorState do
     defstruct cache: nil, connections: []
@@ -60,15 +61,10 @@ defmodule Funnel.Transistor do
 
   Writes on each connections the matched document.
   """
-<<<<<<< HEAD
   def handle_cast({:notify, id, body}, state) do
-    Enum.each(state.connections, fn(conn) -> write(conn, id, body) end)
-    {:noreply, state }
-=======
-  def handle_cast({:notify, id, response}, state) do
+    Enum.each(state.connections, fn(conn) -> write(message(id, item), conn) end)
     connections = Enum.reduce(state.connections, [], fn(conn, connections) -> write(connections, conn, response, id) end)
     {:noreply, Map.update!(state, :connections, fn(_) -> connections end) }
->>>>>>> b9cef58... Migrate to Map
   end
 
   @doc """
@@ -76,13 +72,8 @@ defmodule Funnel.Transistor do
   Add a connection to the connections's pool.
   """
   def handle_call({:add, conn, last_id}, _from, state) do
-<<<<<<< HEAD
-    write_from_cache(conn, state.cache, last_id)
-    {:reply, conn, state.update(connections: [conn | state.connections])}
-=======
     conn = write_from_cache(conn, state.cache, last_id)
     {:reply, conn, Map.update!(state, :connections, fn(_) -> [conn | state.connections] end) }
->>>>>>> b9cef58... Migrate to Map
   end
 
   defp name(token) do
@@ -105,15 +96,11 @@ defmodule Funnel.Transistor do
     Enum.reduce(Cache.list(cache, last_id), conn, &write/2)
   end
 
-  defp write(conn, id, body) do
-    send(conn, {:chunk, message(id, body)})
-  end
-
   defp write(item, conn) do
-    write(conn, item[:id], item[:item])
+    Transport.write(conn, {:chunk, item})
   end
 
-  defp message(id, body) do
-    [id: id, body: body]
+  defp message(id, item) do
+    [id: id, item: item]
   end
 end
