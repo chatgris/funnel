@@ -61,8 +61,8 @@ defmodule Funnel.Transistor do
 
   Writes on each connections the matched document.
   """
-  def handle_cast({:notify, id, body}, state) do
-    Enum.each(state.connections, fn(conn) -> write(conn, id, body) end)
+  def handle_cast({:notify, id, item}, state) do
+    Enum.each(state.connections, fn(conn) -> write(message(id, item), conn) end)
     {:noreply, state }
   end
 
@@ -95,15 +95,11 @@ defmodule Funnel.Transistor do
     Enum.reduce(Cache.list(cache, last_id), conn, &write/2)
   end
 
-  defp write(conn, id, body) do
-    Transport.write(conn, {:chunk, message(id, body)})
-  end
-
   defp write(item, conn) do
-    write(conn, item[:id], item[:item])
+    Transport.write(conn, {:chunk, item})
   end
 
-  defp message(id, body) do
-    [id: id, body: body]
+  defp message(id, item) do
+    [id: id, item: item]
   end
 end
