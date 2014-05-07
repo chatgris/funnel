@@ -1,12 +1,12 @@
 defimpl Funnel.Transport, for: PID do
   def write(receiver, message) do
-    send(receiver, message)
+    send(receiver, {:chunk, message})
     receiver
   end
 end
 
 defimpl Funnel.Transport, for: Dynamo.Connection.Test do
-  def write(conn, {:chunk, [id: _, item: item]}) do
+  def write(conn, [id: _, item: item]) do
     conn.chunk(item)
   end
 end

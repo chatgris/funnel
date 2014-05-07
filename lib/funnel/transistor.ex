@@ -96,7 +96,7 @@ defmodule Funnel.Transistor do
   end
 
   defp write(conn, item) do
-    Transport.write(conn, {:chunk, item})
+    Transport.write(conn, item)
   end
 
   defp message(id, item) do
