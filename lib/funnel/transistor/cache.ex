@@ -72,7 +72,7 @@ defmodule Funnel.Transistor.Cache do
   end
 
   defp new_items(state, id, item) do
-    [[id: id, item: item] | Enum.take(state.items, state.max - 1)]
+    [%{:id => id, :item => item} | Enum.take(state.items, state.max - 1)]
   end
 
   defp name(token) do
@@ -92,7 +92,7 @@ defmodule Funnel.Transistor.Cache do
     {true, [item | items]}
   end
 
-  defp filter_match([id: id_item, item: _item], id, _) when id_item == id do
+  defp filter_match(%{:id => id_item, :item => _item}, id, _) when id_item == id do
     {true, []}
   end
 

@@ -16,10 +16,10 @@ defmodule Funnel.Transistor.CacheTest do
     {:ok, pid} = Cache.start_link("items")
     Cache.push(pid, "toto", "Hello")
     item = List.first(Cache.list(pid))
-    assert item == [id: "toto", item: "Hello"]
+    assert item == %{:id => "toto", :item => "Hello"}
     Cache.push(pid, "roger", "Bye")
     item = List.last(Cache.list(pid))
-    assert item == [id: "roger", item: "Bye"]
+    assert item == %{:id => "roger", :item => "Bye"}
   end
 
   test "limits size of the cache" do
@@ -28,7 +28,7 @@ defmodule Funnel.Transistor.CacheTest do
     assert Enum.count(Cache.list(pid)) == 10
     Cache.push(pid, 102, "Bye")
     item = List.last(Cache.list(pid))
-    assert item == [id: 102, item: "Bye"]
+    assert item == %{:id => 102, :item => "Bye"}
   end
 
   test "return a list from a given id" do
@@ -42,7 +42,7 @@ defmodule Funnel.Transistor.CacheTest do
     Cache.push(pid, "toto", "Hello")
     Cache.push(pid, "roger", "Bye")
     items = Cache.list(pid, "toto")
-    assert items == [[id: "roger", item: "Bye"]]
+    assert items == [%{:id => "roger", :item => "Bye"}]
   end
 
   test "return a list with an unknow id" do
