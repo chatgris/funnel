@@ -1,7 +1,7 @@
 defmodule Funnel.Transistor do
   @moduledoc """
-  `Funnel.Transistor` can be see as a User. It can have several connections, and
-  will notify a matching document on each of thoses connections.
+  `Funnel.Transistor` can be see as a User. It can have several transports, and
+  will notify a matching document on each of thoses transports.
   """
   use GenServer.Behaviour
   alias Funnel.Transistor.Cache
@@ -9,7 +9,7 @@ defmodule Funnel.Transistor do
   import Funnel.Transport, only: [write: 2]
 
   defmodule Funnel.TransistorState do
-    defstruct cache: nil, connections: []
+    defstruct cache: nil, transports: []
   end
 
   alias Funnel.TransistorState
@@ -39,19 +39,19 @@ defmodule Funnel.Transistor do
 
   @doc """
 
-  Wrapper around `GenServer`. Add a new connection in the connections's pool.
+  Wrapper around `GenServer`. Add a new transport in the transports's pool.
 
-  * `conn`    - Something implementing the `Funnel.Transport` protocol
-  * `token`   - the token used to identify the connection
-  * `last_id` - the last id received in the connection
+  * `transport`    - Something implementing the `Funnel.Transport` protocol
+  * `token`   - the token used to identify the transport
+  * `last_id` - the last id received in the transport
   """
-  def add(conn, token, last_id \\ nil) do
-    :gen_server.call name(token), {:add, conn, last_id}
+  def add(transport, token, last_id \\ nil) do
+    :gen_server.call name(token), {:add, transport, last_id}
   end
 
   @doc """
 
-  Default values of `Funnel.Transistor`. An empty pool of connections.
+  Default values of `Funnel.Transistor`. An empty pool of transports.
   """
   def init(cache) do
     {:ok, %TransistorState{cache: cache}}
@@ -59,20 +59,20 @@ defmodule Funnel.Transistor do
 
   @doc """
 
-  Writes on each connections the matched document.
+  Writes on each transports the matched document.
   """
   def handle_cast({:notify, id, item}, state) do
-    Enum.each(state.connections, fn(conn) -> write(conn, message(id, item)) end)
+    Enum.each(state.transports, fn(transport) -> write(transport, message(id, item)) end)
     {:noreply, state }
   end
 
   @doc """
 
-  Add a connection to the connections's pool.
+  Add a transport to the transports's pool.
   """
-  def handle_call({:add, conn, last_id}, _from, state) do
-    write_from_cache(conn, state.cache, last_id)
-    {:reply, conn, Map.update!(state, :connections, fn(_) -> [conn | state.connections] end) }
+  def handle_call({:add, transport, last_id}, _from, state) do
+    write_from_cache(transport, state.cache, last_id)
+    {:reply, transport, Map.update!(state, :transports, fn(_) -> [transport | state.transports] end) }
   end
 
   defp name(token) do
@@ -91,8 +91,8 @@ defmodule Funnel.Transistor do
     :gen_server.start_link({:local, name}, __MODULE__, cache, [])
   end
 
-  defp write_from_cache(conn, cache, last_id) do
-    Enum.reduce(Cache.list(cache, last_id), conn, fn(item, conn) -> write(conn, item) end)
+  defp write_from_cache(transport, cache, last_id) do
+    Enum.reduce(Cache.list(cache, last_id), transport, fn(item, transport) -> write(transport, item) end)
   end
 
   defp message(id, item) do
