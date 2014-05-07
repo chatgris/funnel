@@ -6,7 +6,7 @@ defmodule Funnel.Transistor do
   use GenServer.Behaviour
   alias Funnel.Transistor.Cache
   alias Funnel.Caches
-  alias Funnel.Transport
+  import Funnel.Transport, only: [write: 2]
 
   defmodule Funnel.TransistorState do
     defstruct cache: nil, connections: []
@@ -94,10 +94,6 @@ defmodule Funnel.Transistor do
 
   defp write_from_cache(conn, cache, last_id) do
     Enum.reduce(Cache.list(cache, last_id), conn, fn(item, conn) -> write(conn, item) end)
-  end
-
-  defp write(conn, item) do
-    Transport.write(conn, item)
   end
 
   defp message(id, item) do
