@@ -93,10 +93,10 @@ defmodule Funnel.Transistor do
   end
 
   defp write_from_cache(conn, cache, last_id) do
-    Enum.reduce(Cache.list(cache, last_id), conn, &write/2)
+    Enum.reduce(Cache.list(cache, last_id), conn, fn(item, conn) -> write(conn, item) end)
   end
 
-  defp write(item, conn) do
+  defp write(conn, item) do
     Transport.write(conn, {:chunk, item})
   end
 
