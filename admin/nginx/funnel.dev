@@ -9,6 +9,10 @@ upstream funnel {
 server {
   server_name       funnel.dev;
 
+  location = /favicon.ico {
+    log_not_found off;
+  }
+
   location / {
     try_files $uri @app ;
   }
