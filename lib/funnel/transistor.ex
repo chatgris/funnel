@@ -41,7 +41,7 @@ defmodule Funnel.Transistor do
 
   Wrapper around `GenServer`. Add a new connection in the connections's pool.
 
-  * `conn`    - Process id
+  * `conn`    - Something implementing the `Funnel.Transport` protocol
   * `token`   - the token used to identify the connection
   * `last_id` - the last id received in the connection
   """
