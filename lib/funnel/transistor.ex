@@ -61,18 +61,18 @@ defmodule Funnel.Transistor do
 
   Writes on each transports the matched document.
   """
-  def handle_cast({:notify, id, item}, state) do
-    Enum.each(state.transports, fn(transport) -> write(transport, message(id, item)) end)
-    {:noreply, state }
+  def handle_cast({:notify, id, response}, state) do
+    connections = Enum.reduce(state.connections, [], fn(conn, connections) -> write(connections, conn, response, id) end)
+    {:noreply, %TransistorState{state | connections: connections}}
   end
 
   @doc """
 
   Add a transport to the transports's pool.
   """
-  def handle_call({:add, transport, last_id}, _from, state) do
-    transport = write_from_cache(transport, state.cache, last_id)
-    {:reply, transport, Map.update!(state, :transports, fn(_) -> [transport | state.transports] end) }
+  def handle_call({:add, conn, last_id}, _from, state) do
+    conn = write_from_cache(conn, state.cache, last_id)
+    {:noreply, %TransistorState{state | connections: [conn | state.connections]}}
   end
 
   defp name(token) do
@@ -92,7 +92,10 @@ defmodule Funnel.Transistor do
   end
 
   defp write_from_cache(transport, cache, last_id) do
-    Enum.reduce(Cache.list(cache, last_id), transport, fn(item, transport) -> write(transport, item) end)
+    Enum.reduce(Cache.list(cache, last_id), transport, fn(item, transport) ->
+      {:ok, transport} = write(transport, item)
+      transport
+    end)
   end
 
   defp message(id, item) do

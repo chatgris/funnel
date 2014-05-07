@@ -1,7 +1,7 @@
 defimpl Funnel.Transport, for: PID do
   def write(receiver, message) do
     send(receiver, {:chunk, message})
-    receiver
+    {:ok, receiver}
   end
 end
 
