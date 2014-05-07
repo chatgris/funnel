@@ -6,7 +6,7 @@ defimpl Funnel.Transport, for: PID do
 end
 
 defimpl Funnel.Transport, for: Dynamo.Connection.Test do
-  def write(conn, [id: _, item: item]) do
+  def write(conn, %{:id => _, :item => item}) do
     conn.chunk(item)
   end
 end
@@ -45,8 +45,8 @@ defmodule Funnel.TransistorTest do
     {:ok, _transistor} = Funnel.Transistor.start_link(token)
     Funnel.Transistor.add(self, token, 1)
 
-    refute_receive({:chunk, [id: 1, item: "plop"]})
-    assert_receive({:chunk, [id: 2, item: "plop"]})
+    refute_receive({:chunk, %{:id => 1, :item => "plop"}})
+    assert_receive({:chunk, %{:id => 2, :item => "plop"}})
   end
 
   test "send new message" do
@@ -56,6 +56,6 @@ defmodule Funnel.TransistorTest do
     Funnel.Transistor.add(self, token, 1)
     Funnel.Transistor.notify(token, 2, "plup")
 
-    assert_receive({:chunk, [id: 2, item: "plup"]})
+    assert_receive({:chunk, %{:id => 2, :item => "plup"}})
   end
 end

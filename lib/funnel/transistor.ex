@@ -96,6 +96,6 @@ defmodule Funnel.Transistor do
   end
 
   defp message(id, item) do
-    [id: id, item: item]
+    %{:id => id, :item => item}
   end
 end
