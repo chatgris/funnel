@@ -71,8 +71,8 @@ defmodule Funnel.Transistor do
   Add a transport to the transports's pool.
   """
   def handle_call({:add, transport, last_id}, _from, state) do
-    write_from_cache(transport, state.cache, last_id)
-    {:reply, transport, Map.update!(state, :transports, fn(_) -> [transport | state.transports] end) }
+    transport = write_from_cache(transport, state.cache, last_id)
+    {:reply, transport, %TransistorState{state | transports: [transport | state.transports]}}
   end
 
   defp name(token) do

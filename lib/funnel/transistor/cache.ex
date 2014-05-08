@@ -64,7 +64,7 @@ defmodule Funnel.Transistor.Cache do
   end
 
   def handle_call({:push, id, item}, _from, state) do
-    {:reply, id, Map.update!(state, :items, fn(_) -> new_items(state, id, item) end)}
+    {:reply, id, %CacheState{state | items: new_items(state, id, item) }}
   end
 
   def handle_call({:list, last_id}, _from, state) do
