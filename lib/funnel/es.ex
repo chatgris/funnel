@@ -54,7 +54,7 @@ defmodule Funnel.Es do
   """
   def register(index_id, token, uuid, query) do
     id = "#{token}-#{uuid}"
-    percolation = put("/_percolator/#{index_id}_#{Mix.env}/#{id}", query)
+    percolation = put("/#{index_id}_#{Mix.env}/.percolator/#{id}", query)
     {:ok, body} = JSEX.decode(percolation.body)
     {:ok, response} = JSEX.encode([query_id: uuid, index_id: index_id, body: body])
     {percolation.status_code, response}
@@ -79,7 +79,7 @@ defmodule Funnel.Es do
   * `uuid`     - Query's id
   """
   def unregister(index_id, token, id) do
-    do_unregister("/_percolator/#{namespace(index_id)}/#{token}-#{id}")
+    do_unregister("/#{namespace(index_id)}/.percolator/#{token}-#{id}")
   end
 
   @doc """
@@ -93,7 +93,8 @@ defmodule Funnel.Es do
   * `size`      - Maximum size of returned results. Optional, default to 0.
   """
   def find(token, search_query \\ HashDict.new) do
-    post("/_percolator/_search", QuerySearch.query(token, search_query))
+    index_id = Dict.get(search_query, :index_id, "*")
+    post("/#{namespace(index_id)}/.percolator/_search", QuerySearch.query(token, search_query))
       |> QuerySearch.response
   end
 

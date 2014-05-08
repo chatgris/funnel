@@ -33,6 +33,10 @@ defmodule EsTest do
     response
   end
 
+  def assert_percolate(%{"_id" =>id, "_index" => _}, uuid) do
+    assert id == "token-#{uuid}"
+  end
+
   test "returns a 201 on query creation" do
     body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')
     Funnel.Es.unregister("funnel", "token", body["query_id"])
@@ -57,10 +61,11 @@ defmodule EsTest do
   end
 
   test "returns queries from percolator" do
-    uuid = assert_query_creation('{"query" : {"field" : {"message" : "elasticsearch"}}}')["query_id"]
+    uuid = assert_query_creation('{"query" : {"match" : {"message" : "elasticsearch"}}}')["query_id"]
     message = '{"doc" : {"message" : "this new elasticsearch percolator feature is nice, borat style"}}'
     Funnel.Es.refresh
-    assert Funnel.Es.percolate("funnel", message) == ["token-#{uuid}"]
+    Funnel.Es.percolate("funnel", message)
+      |> Enum.each(fn(match) -> assert_percolate(match, uuid) end)
     Funnel.Es.unregister("funnel", "token", uuid)
   end
 

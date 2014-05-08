@@ -4,10 +4,9 @@ defmodule Funnel.QuerySearch do
 
   def query(token, search_query) do
     query_id = Dict.get(search_query, :query_id, "*")
-    index_id = Dict.get(search_query, :index_id, "*")
     from = Dict.get(search_query, :from, 0)
     size = Dict.get(search_query, :size, 50)
-    '{"query": {"bool": {"must": [{"query_string": {"default_field": "_id","query": "#{token}-#{query_id}"}},{"query_string":{"default_field": "_type","query": "#{namespace(index_id)}"}}]}},"from": #{from},"size": #{size}}'
+    '{"query": {"bool": {"must": [{"query_string": {"default_field": "_id","query": "#{token}-#{query_id}"}}]}},"from": #{from},"size": #{size}}'
 
   end
 
@@ -31,7 +30,7 @@ defmodule Funnel.QuerySearch do
   end
 
   defp extract_index_id(query) do
-    String.split(query["_type"], "_")
+    String.split(query["_index"], "_")
       |> List.first
   end
 
