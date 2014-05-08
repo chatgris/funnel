@@ -5,7 +5,7 @@
 Funnel is meant to build Streaming API build upon ElasticSearch's
 [percolation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html).
 
-Funnel does not support ElasticSearch > 1.0 for at the moment.
+Funnel supports ElasticSearch >= 1.1 for at the moment.
 
 Funnel allow to register users / devices, associates some queries to user, and
 exposes a streaming endpoint for each user.
