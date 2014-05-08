@@ -61,7 +61,7 @@ defmodule Funnel.Transistor do
   """
   def handle_cast({:notify, id, response}, state) do
     connections = Enum.reduce(state.connections, [], fn(conn, connections) -> write(connections, conn, response, id) end)
-    {:noreply, Map.update!(state, :connections, fn(_) -> connections end) }
+    {:noreply, %TransistorState{state | connections: connections}}
   end
 
   @doc """
@@ -70,7 +70,7 @@ defmodule Funnel.Transistor do
   """
   def handle_call({:add, conn, last_id}, _from, state) do
     conn = write_from_cache(conn, state.cache, last_id)
-    {:reply, conn, Map.update!(state, :connections, fn(_) -> [conn | state.connections] end) }
+    {:noreply, %TransistorState{state | connections: [conn | state.connections]}}
   end
 
   defp name(token) do
