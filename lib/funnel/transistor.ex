@@ -15,7 +15,6 @@ defmodule Funnel.Transistor do
   alias Funnel.TransistorState
 
   @doc """
-
   Start a new `Funnel.Transistor` actor.
   """
   def start_link(token) do
@@ -24,7 +23,6 @@ defmodule Funnel.Transistor do
   end
 
   @doc """
-
   Wrapper around `GenServer`. Notify a user of matches.
 
   * `token`        - User's token
@@ -38,27 +36,26 @@ defmodule Funnel.Transistor do
   end
 
   @doc """
-
   Wrapper around `GenServer`. Add a new transport in the transports's pool.
 
   * `transport`    - Something implementing the `Funnel.Transport` protocol
-  * `token`   - the token used to identify the transport
-  * `last_id` - the last id received in the transport
+  * `token`        - the token used to identify the transport
+  * `last_id`      - the last id received in the transport
   """
   def add(transport, token, last_id \\ nil) do
     :gen_server.call name(token), {:add, transport, last_id}
   end
 
   @doc """
-
   Default values of `Funnel.Transistor`. An empty pool of transports.
+
+  * `pid`    - Cache store
   """
   def init(cache) do
     {:ok, %TransistorState{cache: cache}}
   end
 
   @doc """
-
   Writes on each transports the matched document.
   """
   def handle_cast({:notify, id, item}, state) do
@@ -69,7 +66,6 @@ defmodule Funnel.Transistor do
   end
 
   @doc """
-
   Add a transport to the transports's pool.
   """
   def handle_call({:add, transport, last_id}, _from, state) do

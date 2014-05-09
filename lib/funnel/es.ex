@@ -12,7 +12,6 @@ defmodule Funnel.Es do
   alias Funnel.QuerySearch
 
   @doc """
-
   Returns the url used in the current request.
 
   This is the function used by HTTPotion to make everything works.
@@ -22,7 +21,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Returns a list of query_id matched by the Elasticsearch percolation.
   """
   def percolate(index_id, body) do
@@ -32,7 +30,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Register a query against an Elasticsearch index.
 
   * `index_id` - Index's id
@@ -44,7 +41,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Update a query, or create a query with a specific id.
 
   * `index_id` - Index's id
@@ -61,7 +57,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Remove all queries from a given index.
 
   * `index_id` - Index's id
@@ -73,7 +68,6 @@ defmodule Funnel.Es do
   @doc """
 
   Remove a given query from a given index.
-
   * `index_id` - Index's id
   * `token`    - User's token
   * `uuid`     - Query's id
@@ -86,11 +80,8 @@ defmodule Funnel.Es do
 
   Returns a list of query for a given token.
 
-  * `token`     - User's token. Mandatory.
-  * `query_id` - Query's id. Optional, default to "*".
-  * `index_id`  - Index's id. Optional, default to "*".
-  * `from`      - Used for pagination. Optional, default to 0.
-  * `size`      - Maximum size of returned results. Optional, default to 0.
+  * `token`        - User's token. Mandatory.
+  * `search_query` - Query as `HashDict`
   """
   def find(token, search_query \\ HashDict.new) do
     index_id = Dict.get(search_query, :index_id, "*")
@@ -99,7 +90,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Refresh Elasticsearch indexes.
   """
   def refresh do
@@ -107,7 +97,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Create an empty index.
   """
   def create do
@@ -115,7 +104,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Create an index with mappings and settings.
 
   * `body`     - Mappings and settings in json
@@ -129,7 +117,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Delete an index.
   """
   def destroy(index_id) do
