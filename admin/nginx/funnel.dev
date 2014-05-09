@@ -1,4 +1,4 @@
-# 127.0.0.1 funnel.dev
+# 127.0.0.1 funnel.dev docs.funnel.dev
 #
 # /etc/hosts
 
@@ -27,4 +27,12 @@ server {
     proxy_pass http://funnel;
   }
 
+}
+
+server {
+  server_name docs.funnel.dev;
+
+  location / {
+    root         /path/to/funnel/source/docs;
+  }
 }
