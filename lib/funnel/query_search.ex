@@ -1,5 +1,4 @@
 defmodule Funnel.QuerySearch do
-  import Funnel.Es, only: [namespace: 1]
   import JSEX, only: [decode: 1, encode: 1]
 
   def query(token, search_query) do
