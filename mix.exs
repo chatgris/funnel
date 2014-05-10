@@ -7,7 +7,7 @@ defmodule Funnel.Mixfile do
       dynamos: [Funnel.Dynamo],
       compilers: [:elixir, :dynamo, :app],
       compile_path: "tmp/#{Mix.env}/funnel/ebin",
-      elixir: "~> 0.12",
+      elixir: "~> 0.13",
       deps: deps ]
   end
 
