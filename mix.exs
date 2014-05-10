@@ -13,7 +13,7 @@ defmodule Funnel.Mixfile do
 
   # Configuration for the OTP application
   def application do
-    [ applications: [:cowboy, :dynamo, :httpotion],
+    [ applications: [:cowboy, :dynamo, :httpotion, :jsex],
       mod: { Funnel, [] } ]
   end
 
