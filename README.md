@@ -135,16 +135,10 @@ curl "http://localhost:4000/river?token=7d0ac81fbdd646dd9e883e3b007ce58d"
 data: {"query_id":"dac278b8a6904b469d85df0773d16f5a","body":"{\"doc\":{\"field1\" :\"value1\"}}"}
 ```
 
+River provides a local cache. If a `last_id` params is given, any item more
+recent will be returned.
+
 ### Monitoring
 
 Funnel can be monitored on `/status`. Each resquest on this endpoint does a
 request on ElasticSearch root.
-
-## Storage
-
-Documents are not persisted by funnel. Period.
-
-River will have a local cache to support `last-event-id` from Server-sent
-events.
-
-Although, a webservice could register on funnel, and persist relevant messages.
