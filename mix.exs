@@ -24,7 +24,7 @@ defmodule Funnel.Mixfile do
       { :dynamo,      github: "dynamo/dynamo" },
       { :uuid,        github: "travis/erlang-uuid" },
       { :ex_doc,      github: "elixir-lang/ex_doc" },
-      { :poolboy,     github: "devinus/poolboy"}
+      { :poolboy,     '~> 1.2' }
     ]
   end
 end
