@@ -28,7 +28,7 @@ mix do deps.get, deps.compile
 Starting the HTTP API:
 
 ``` shell
-iex -S mix server
+mix server
 ```
 
 ## Testing things
