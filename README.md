@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/AF83/funnel.png?branch=master)](https://travis-ci.org/AF83/funnel)
 
-Funnel is meant to build Streaming API build upon ElasticSearch's
+Funnel is for building Streaming APIs build upon ElasticSearch’s
 [percolation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-percolate.html).
 
 Funnel supports ElasticSearch >= 1.1.
