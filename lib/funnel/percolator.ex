@@ -54,6 +54,6 @@ defmodule Funnel.Percolator do
   end
 
   defp decode_match(match) do
-    String.split(match, "-")
+    String.split(match["_id"], "-")
   end
 end
