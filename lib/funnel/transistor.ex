@@ -18,7 +18,8 @@ defmodule Funnel.Transistor do
   Start a new `Funnel.Transistor` actor.
   """
   def start_link(token) do
-    name(token)
+    token
+      |> extract_name
       |> find_or_start
   end
 
@@ -30,7 +31,7 @@ defmodule Funnel.Transistor do
   * `response`     - Document in json
   """
   def notify(token, id, response) do
-    case Process.whereis(name(token)) do
+    case Process.whereis(extract_name(token)) do
       pid -> :gen_server.cast pid, {:notify, id, response}
     end
   end
@@ -43,7 +44,9 @@ defmodule Funnel.Transistor do
   * `last_id`      - the last id received in the transport
   """
   def add(transport, token, last_id \\ nil) do
-    :gen_server.call name(token), {:add, transport, last_id}
+    token
+      |> extract_name
+      |> :gen_server.call {:add, transport, last_id}
   end
 
   @doc """
@@ -81,8 +84,8 @@ defmodule Funnel.Transistor do
     transports
   end
 
-  defp name(token) do
-    binary_to_atom(token)
+  defp extract_name(token) do
+    token |> binary_to_atom
   end
 
   defp find_or_start(name) do
