@@ -5,7 +5,7 @@ defmodule FeedingRouter do
   prepare do: conn.fetch([:params, :body])
 
   post "/" do
-    Funnel.PercolatorPool.percolate conn.params[:index_id], conn.req_body
+    Funnel.percolate conn.params[:index_id], conn.req_body
     conn.resp 202, ""
   end
 end
