@@ -1,5 +1,5 @@
 defmodule Funnel.PercolatorTest do
-  use Funnel.TestCase, async: true
+  use Funnel.TestCase
 
   # TODO: Remove this duplication
 
