@@ -16,7 +16,9 @@ defmodule Funnel.PercolatorTest do
     Funnel.register(self, token)
     Funnel.Es.refresh
     Funnel.percolate(index_id, message)
-    assert_receive({:chunk, %{id: _, item: _}})
+    assert_receive({:chunk, %{id: _, item: item}})
+    {:ok, item} = JSEX.decode item
+    assert item["query_id"] == uuid
 
     Funnel.Es.unregister(index_id, token, uuid)
   end
