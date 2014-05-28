@@ -14,10 +14,11 @@ defmodule Funnel.PercolatorTest do
     message = '{"doc" : {"message" : "this new elasticsearch percolator feature is nice, borat style"}}'
 
     Funnel.register(self, token)
+    Funnel.Es.refresh
     Funnel.percolate(index_id, message)
     Funnel.Es.unregister(index_id)
     Funnel.Es.unregister(index_id, "token", uuid)
 
-    assert_receive({:chunk, %{id: uuid, item: _}}, 500)
+    assert_receive({:chunk, %{id: uuid, item: _}}, 50000)
   end
 end
