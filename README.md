@@ -15,7 +15,7 @@ new document matching this query is available.
 
 ## Installing things
 
-First, Elixir must be installed, check out the resources section.
+First, Elixir must be installed, in order to be choose the fine Elixir version, you should check the [.travis.yml](https://github.com/AF83/funnel/blob/master/.travis.yml#L7).
 
 Once Elixir is installed, dependencies must be installed with:
 
