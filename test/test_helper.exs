@@ -28,8 +28,8 @@ end
 defmodule Funnel.Es.Asserts do
   import ExUnit.Assertions, only: [assert: 1, assert: 2]
 
-  def assert_query_creation(query, index \\ "funnel") do
-    {status, response} = Funnel.Es.register(index, "token", query)
+  def assert_query_creation(query, index \\ "funnel", token \\ "token") do
+    {status, response} = Funnel.Es.register(index, token, query)
     {:ok, body} = JSEX.decode response
     assert status == 201
     body

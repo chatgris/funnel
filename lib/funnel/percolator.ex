@@ -38,16 +38,30 @@ defmodule Funnel.Percolator do
   """
   def handle_cast({:percolate, index_id, body}, nil) do
     Funnel.Es.percolate(index_id, body)
+      |> sort_by_token
       |> Enum.each(fn(match)-> notify(match, body) end)
     { :noreply, nil}
   end
 
+  defp sort_by_token(collection) do
+    Enum.reduce(collection, [], fn(match, matches) ->
+      [token, uuid] = decode_match(match)
+
+      elem = Enum.find(matches, fn(x) -> x[:token] == token end)
+      elem = elem || %{:token => token, :query_ids => []}
+
+      ids = [uuid | elem[:query_ids]]
+      List.delete(matches, elem)
+      [%{elem | :query_ids => ids} | matches]
+    end)
+  end
+
   defp notify(match, body) do
-    [token, uuid] = decode_match(match)
+    token = match[:token]
     id = Funnel.Uuid.generate
 
     {:ok, cache} = Funnel.Caches.add token
-    {:ok, response} = JSEX.encode([query_id: uuid, body: body])
+    {:ok, response} = JSEX.encode([query_ids: match[:query_ids], body: body])
 
     Funnel.Transistor.Cache.push(cache, id, response)
     Funnel.Transistor.notify(token, id, response)
