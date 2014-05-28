@@ -26,6 +26,6 @@ defmodule Funnel.PercolatorTest do
     Funnel.Es.unregister(index_id)
     Funnel.Es.unregister(index_id, "token", uuid)
 
-    assert_receive({:chunk, %{id: uuid, item: _}})
+    assert_receive({:chunk, %{id: uuid, item: _}}, 500)
   end
 end
