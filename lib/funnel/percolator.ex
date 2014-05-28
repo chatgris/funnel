@@ -38,12 +38,12 @@ defmodule Funnel.Percolator do
   """
   def handle_cast({:percolate, index_id, body}, nil) do
     Funnel.Es.percolate(index_id, body)
-      |> sort_by_token
+      |> group_by_token
       |> Enum.each(fn(match)-> notify(match, body) end)
     { :noreply, nil}
   end
 
-  defp sort_by_token(collection) do
+  defp group_by_token(collection) do
     Enum.reduce(collection, [], fn(match, matches) ->
       [token, uuid] = decode_match(match)
 
