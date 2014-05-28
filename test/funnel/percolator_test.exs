@@ -16,9 +16,8 @@ defmodule Funnel.PercolatorTest do
     Funnel.register(self, token)
     Funnel.Es.refresh
     Funnel.percolate(index_id, message)
-    Funnel.Es.unregister(index_id)
-    Funnel.Es.unregister(index_id, "token", uuid)
+    assert_receive({:chunk, %{id: _, item: _}})
 
-    assert_receive({:chunk, %{id: uuid, item: _}}, 50000)
+    Funnel.Es.unregister(index_id, token, uuid)
   end
 end
