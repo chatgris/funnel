@@ -2,40 +2,7 @@ defmodule EsTest do
   use Funnel.TestCase
 
   Funnel.Es.create
-
-  def assert_query_creation(query, index \\ "funnel") do
-    {status, response} = Funnel.Es.register(index, "token", query)
-    {:ok, body} = JSEX.decode response
-    assert status == 201
-    body
-  end
-
-  def assert_query_update(query, uuid, index \\ "funnel") do
-    {status, response} = Funnel.Es.register(index, "token", uuid, query)
-    {:ok, body} = JSEX.decode response
-    assert status == 200
-    body
-  end
-
-  def assert_query_find(index) do
-    hash = HashDict.new
-    hash = Dict.put(hash, :index_id, index)
-    {status, response} = Funnel.Es.find("token", hash)
-    {:ok, response} = JSEX.decode response
-    assert status == 200
-    response
-  end
-
-  def assert_query_find do
-    {status, response} = Funnel.Es.find("token")
-    {:ok, response} = JSEX.decode response
-    assert status == 200
-    response
-  end
-
-  def assert_percolate(%{"_id" =>id, "_index" => _}, uuid) do
-    assert id == "token-#{uuid}"
-  end
+  import Funnel.Es.Asserts
 
   test "returns a 201 on query creation" do
     body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')

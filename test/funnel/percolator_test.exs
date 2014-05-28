@@ -1,14 +1,6 @@
 defmodule Funnel.PercolatorTest do
   use Funnel.TestCase
-
-  # TODO: Remove this duplication
-
-  def assert_query_creation(query, index \\ "funnel") do
-    {status, response} = Funnel.Es.register(index, "token", query)
-    {:ok, body} = JSEX.decode response
-    assert status == 201
-    body
-  end
+  import Funnel.Es.Asserts, only: [assert_query_creation: 2]
 
   test "percolator is alive" do
     {:ok, percolator} = Funnel.Percolator.start_link(nil)
