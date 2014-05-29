@@ -46,15 +46,19 @@ defmodule Funnel.Percolator do
   defp group_by_token(collection) do
     Enum.reduce(collection, [], fn(match, matches) ->
       [token, uuid] = decode_match(match)
+      match = extract_match(matches, token)
+      ids = [uuid | match[:query_ids]]
+      matches = List.delete(matches, match)
 
-      elem = Enum.find(matches, fn(x) -> x[:token] == token end)
-      elem = elem || %{:token => token, :query_ids => []}
-
-      ids = [uuid | elem[:query_ids]]
-      matches = List.delete(matches, elem)
-
-      [%{elem | :query_ids => ids} | matches]
+      [%{match | :query_ids => ids} | matches]
     end)
+  end
+
+  defp extract_match(matches, token) do
+    case Enum.find(matches, fn(x) -> x[:token] == token end) do
+      nil  -> %{:token => token, :query_ids => []}
+      elem -> elem
+    end
   end
 
   defp notify(match, body) do
