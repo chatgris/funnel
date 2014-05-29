@@ -31,9 +31,11 @@ defmodule Funnel.PercolatorTest do
     message = '{"doc" : {"message" : "So long, and thanks for all the fish"}}'
 
     Funnel.register(self, token)
-    Funnel.Es.refresh
     Funnel.percolate(index_id, message)
+
     assert_receive({:chunk, %{id: _, item: item}})
+    refute_receive({:chunk, %{id: _, item: _}})
+
     {:ok, item} = JSEX.decode item
     assert item["query_ids"] |> Enum.sort == [uuid1, uuid2] |> Enum.sort
 
