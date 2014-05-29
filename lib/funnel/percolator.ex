@@ -51,7 +51,8 @@ defmodule Funnel.Percolator do
       elem = elem || %{:token => token, :query_ids => []}
 
       ids = [uuid | elem[:query_ids]]
-      List.delete(matches, elem)
+      matches = List.delete(matches, elem)
+
       [%{elem | :query_ids => ids} | matches]
     end)
   end
