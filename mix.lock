@@ -6,7 +6,7 @@
   "ibrowse": {:git, "git://github.com/cmullaparthi/ibrowse.git", "7871e2ebe8811efb64e1917e2de455fa87e8dfe3", [tag: "v4.1.0"]},
   "jsex": {:package, "2.0.0"},
   "jsx": {:package, "2.0.2"},
-  "mime": {:git, "git://github.com/dynamo/mime.git", "db84370c53a67a7e58a4d0cfb026f4edc64a9367", []},
+  "mime": {:git, "git://github.com/dynamo/mime.git", "a13f7b071fdc6146c162300c9ab5025f1c23e98b", []},
   "poolboy": {:package, "1.2.1"},
   "ranch": {:git, "git://github.com/extend/ranch.git", "5df1f222f94e08abdcab7084f5e13027143cc222", [ref: "0.9.0"]},
   "uuid": {:git, "git://github.com/travis/erlang-uuid.git", "f6a1cf9027e4af78b4a81201f4f6db1a822b8316", []}}
