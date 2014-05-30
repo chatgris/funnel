@@ -84,7 +84,7 @@ defmodule Funnel.Es do
   * `search_query` - Query as `HashDict`
   """
   def find(token, search_query \\ HashDict.new) do
-    index_id = Dict.get(search_query, :index_id, "*")
+    index_id = search_query[:index_id] || "*"
     post("/#{namespace(index_id)}/.percolator/_search", QuerySearch.query(token, search_query))
       |> QuerySearch.response
   end
