@@ -23,7 +23,7 @@ defmodule Funnel.Mixfile do
       { :jsex,        '~> 2.0' },
       { :dynamo,      github: "dynamo/dynamo" },
       { :uuid,        github: "travis/erlang-uuid" },
-      { :ex_doc,      github: "elixir-lang/ex_doc" },
+      { :ex_doc,      github: "elixir-lang/ex_doc", only: [:dev, :test] },
       { :poolboy,     '~> 1.2' }
     ]
   end
