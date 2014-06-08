@@ -4,7 +4,7 @@ defmodule Funnel.Transistor.Cache do
   `Funnel.Transistor`, and can expose the whole list, or from a given id.
   """
 
-  use GenServer.Behaviour
+  use GenServer
 
   defmodule Funnel.Transistor.CacheState do
     defstruct items: [], max: 10
@@ -41,7 +41,7 @@ defmodule Funnel.Transistor.Cache do
   * `item`   - Pretty much anything
   """
   def push(pid, id, item) do
-    :gen_server.call pid, {:push, id, item}
+    GenServer.call(pid, {:push, id, item})
   end
 
   @doc """
@@ -51,7 +51,7 @@ defmodule Funnel.Transistor.Cache do
   * `from`   - Last-Event-Id
   """
   def list(pid, from) do
-    :gen_server.call pid, {:list, from}
+    GenServer.call(pid, {:list, from})
   end
 
   @doc """
@@ -60,7 +60,7 @@ defmodule Funnel.Transistor.Cache do
   * `pid`    - Cache store
   """
   def list(pid) do
-    :gen_server.call pid, {:list, nil}
+    GenServer.call(pid, {:list, nil})
   end
 
   def handle_call({:push, id, item}, _from, state) do

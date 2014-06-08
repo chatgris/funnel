@@ -4,14 +4,14 @@ defmodule Funnel.Percolator do
   Elasticsearch percolation, then, notify each User.
   """
 
-  use GenServer.Behaviour
+  use GenServer
 
   @doc """
 
   Start a new `Funnel.Percolator` actor.
   """
   def start_link(_state) do
-    :gen_server.start_link(__MODULE__, nil, [])
+    GenServer.start_link(__MODULE__, nil, [])
   end
 
   @doc """
@@ -21,7 +21,7 @@ defmodule Funnel.Percolator do
   * `body`     - Document in json
   """
   def percolate(percolator, index_id, body) do
-    :gen_server.cast percolator, {:percolate, index_id, body}
+    GenServer.cast(percolator, {:percolate, index_id, body})
   end
 
   @doc """
