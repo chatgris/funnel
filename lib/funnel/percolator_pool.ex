@@ -3,6 +3,7 @@ defmodule Funnel.PercolatorPool do
   Pool of `Funnel.Percolators`.
   """
   use Supervisor
+  import Funnel.Percolator, only: [percolate: 3]
 
   @doc """
 
@@ -33,6 +34,6 @@ defmodule Funnel.PercolatorPool do
   Submit a document to Elasticsearch's percolator through the pool.
   """
   def percolate(index_id, body) do
-    :poolboy.transaction(:percolator_pool, fn(percolator)-> Funnel.Percolator.percolate(percolator, index_id, body) end)
+    :poolboy.transaction(:percolator_pool, fn(percolator)-> percolate(percolator, index_id, body) end)
   end
 end
