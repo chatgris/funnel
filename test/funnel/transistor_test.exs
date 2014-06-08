@@ -1,25 +1,10 @@
 defmodule Funnel.TransistorTest do
   use Funnel.TestCase, async: true
-  use Dynamo.HTTP.Case
 
   test "transistor is alive" do
     token = "secrethttptoken"
-    conn(:GET, "/?token=#{token}")
     {:ok, transistor} = Funnel.Transistor.start_link(token)
     assert Process.alive?(transistor)
-  end
-
-  test "receiver is a dynamo conn" do
-    token = "secrethttptoken"
-    conn = conn(:GET, "/?token=#{token}")
-    conn = conn.send_chunked(200)
-    {:ok, transistor} = Funnel.Transistor.start_link(token)
-    assert Process.alive?(transistor)
-
-    {:ok, cache} = Funnel.Caches.add token
-    Funnel.Transistor.Cache.push(cache, 1, "plop")
-    Funnel.Transistor.Cache.push(cache, 2, "plop")
-    Funnel.Transistor.add(conn, token, 1)
   end
 
   test "send message from the cache" do
