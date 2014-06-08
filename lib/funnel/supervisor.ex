@@ -3,27 +3,25 @@ defmodule Funnel.Supervisor do
   Supervise all the things. \o/
   Start the dynamo application and the percolators's pool
   """
-  use Supervisor.Behaviour
+  use Supervisor
 
   @doc """
-
   Start the dynamo application and the percolators's pool
   """
-  def start_link(nil) do
-    :supervisor.start_link(__MODULE__, nil)
+  def start_link do
+    Supervisor.start_link(__MODULE__, [])
   end
 
   @doc """
-
   Default values of `Funnel.Supervisor`.
   """
-  def init(nil) do
+  def init(_options) do
     children = [
       worker(Funnel.PercolatorPool, []),
       supervisor(Funnel.Transistors, []),
       supervisor(Funnel.Caches, [])
     ]
 
-    supervise children, strategy: :one_for_one
+    supervise(children, strategy: :one_for_one)
   end
 end

@@ -2,14 +2,14 @@ defmodule Funnel.PercolatorPool do
   @moduledoc """
   Pool of `Funnel.Percolators`.
   """
-  use Supervisor.Behaviour
+  use Supervisor
 
   @doc """
 
   Start the percolators's pool
   """
   def start_link do
-    :supervisor.start_link(__MODULE__, [])
+    Supervisor.start_link(__MODULE__, [])
   end
 
   def init([]) do
