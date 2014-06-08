@@ -3,7 +3,7 @@ defmodule Funnel.Transistor do
   `Funnel.Transistor` can be see as a User. It can have several transports, and
   will notify a matching document on each of thoses transports.
   """
-  use GenServer.Behaviour
+  use GenServer
   alias Funnel.Transistor.Cache
   alias Funnel.Caches
   import Funnel.Transport, only: [write: 2]
@@ -32,7 +32,7 @@ defmodule Funnel.Transistor do
   """
   def notify(token, id, response) do
     case Process.whereis(extract_name(token)) do
-      pid -> :gen_server.cast pid, {:notify, id, response}
+      pid -> GenServer.cast(pid, {:notify, id, response})
     end
   end
 
@@ -46,7 +46,7 @@ defmodule Funnel.Transistor do
   def add(transport, token, last_id \\ nil) do
     token
       |> extract_name
-      |> :gen_server.call {:add, transport, last_id}
+      |> GenServer.call({:add, transport, last_id})
   end
 
   @doc """
