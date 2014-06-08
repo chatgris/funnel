@@ -4,8 +4,7 @@ defmodule Funnel.Mixfile do
   def project do
     [ app: :funnel,
       version: "0.0.1",
-      dynamos: [Funnel.Dynamo],
-      compilers: [:elixir, :dynamo, :app],
+      compilers: [:elixir, :app],
       compile_path: "tmp/#{Mix.env}/funnel/ebin",
       elixir: "~> 0.13.3",
       deps: deps ]
@@ -13,15 +12,13 @@ defmodule Funnel.Mixfile do
 
   # Configuration for the OTP application
   def application do
-    [ applications: [:cowboy, :dynamo, :httpotion, :jsex],
+    [ applications: [:httpotion, :jsex],
       mod: { Funnel, [] } ]
   end
 
   defp deps do
-    [ { :cowboy,      github: "extend/cowboy" },
-      { :httpotion,   github: "myfreeweb/httpotion" },
+    [ { :httpotion,   github: "myfreeweb/httpotion" },
       { :jsex,        '~> 2.0' },
-      { :dynamo,      github: "dynamo/dynamo" },
       { :uuid,        github: "travis/erlang-uuid" },
       { :ex_doc,      github: "elixir-lang/ex_doc", only: [:dev, :test] },
       { :poolboy,     '~> 1.2' }
