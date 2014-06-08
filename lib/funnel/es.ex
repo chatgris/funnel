@@ -66,7 +66,6 @@ defmodule Funnel.Es do
   end
 
   @doc """
-
   Remove a given query from a given index.
   * `index_id` - Index's id
   * `token`    - User's token
