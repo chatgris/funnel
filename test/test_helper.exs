@@ -16,12 +16,6 @@ defimpl Funnel.Transport, for: PID do
   end
 end
 
-defimpl Funnel.Transport, for: Dynamo.Connection.Test do
-  def write(conn, %{:id => _, :item => item}) do
-    conn.chunk(item)
-  end
-end
-
 defmodule Funnel.Es.Asserts do
   import ExUnit.Assertions, only: [assert: 1, assert: 2]
 
