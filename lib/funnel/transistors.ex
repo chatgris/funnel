@@ -2,20 +2,22 @@ defmodule Funnel.Transistors do
   @moduledoc """
   Supervise all `Funnel.Transistors`.
   """
-  use Supervisor.Behaviour
+  use Supervisor
 
   @doc """
   Start the Transistors's supervisor.
   """
   def start_link do
-    :supervisor.start_link({:local, __MODULE__}, __MODULE__, [])
+    Supervisor.start_link(__MODULE__, [], [name: {:local, __MODULE__}])
   end
 
   @doc """
   Default values of `Funnel.Transistors`.
   """
   def init([]) do
-    children = [worker(Funnel.Transistor, [])]
+    children = [
+      worker(Funnel.Transistor, [])
+    ]
 
     supervise children, strategy: :simple_one_for_one
   end

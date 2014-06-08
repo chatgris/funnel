@@ -6,7 +6,7 @@ defmodule Funnel do
   application and its Dynamos.
   """
   def start(_type, _args) do
-    Funnel.Supervisor.start_link(nil)
+    Funnel.Supervisor.start_link
   end
 
   @doc """
