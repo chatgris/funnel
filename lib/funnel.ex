@@ -13,12 +13,14 @@ defmodule Funnel do
   Register a new transport.
 
   * `transport`    - Something implementing the `Funnel.Transport` protocol
-  * `token`        - the token used to identify the transport
   * `last_id`      - the last id received in the transport
   """
-  def register(transport, token, last_id \\ nil) do
+  def register(transport, last_id \\ nil) do
+    token = Funnel.Uuid.generate
+
     {:ok, _transistor} = Funnel.Transistors.add token
     Funnel.Transistor.add(transport, token, last_id)
+    token
   end
 
   @doc """
