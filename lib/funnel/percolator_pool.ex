@@ -14,12 +14,11 @@ defmodule Funnel.PercolatorPool do
   end
 
   def init([]) do
-    # Here are my pool options
     pool_options = [
       name: {:local, :percolator_pool},
       worker_module: Funnel.Percolator,
-      size: 20,
-      max_overflow: 40
+      size: size,
+      max_overflow: max_overflow
     ]
 
     children = [
@@ -35,5 +34,19 @@ defmodule Funnel.PercolatorPool do
   """
   def percolate(index_id, body) do
     :poolboy.transaction(:percolator_pool, fn(percolator)-> percolate(percolator, index_id, body) end)
+  end
+
+  defp size do
+    case System.get_env("FUNNEL_POOL_SIZE") do
+      nil -> 100
+      max -> max |> String.to_integer
+    end
+  end
+
+  defp max_overflow do
+    case System.get_env("FUNNEL_POOL_MAX_OVERFLOW") do
+      nil -> 1000
+      max -> max |> String.to_integer
+    end
   end
 end
