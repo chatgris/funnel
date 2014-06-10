@@ -15,17 +15,28 @@ defmodule Funnel.Percolator do
   end
 
   @doc """
-
   Wrapper around `GenServer`. Send a document to Elasticsearch's percolator.
 
-  * `body`     - Document in json
+  * `percolator`   - PID of the current percolator
+  * `index_id`     - Index's id
+  * `document`     - Document in json
   """
-  def percolate(percolator, index_id, body) do
-    GenServer.cast(percolator, {:percolate, index_id, body})
+  def percolate(percolator, index_id, document) when is_binary(document) do
+    GenServer.cast(percolator, {:percolate, index_id, document})
   end
 
   @doc """
+  Wrapper around `GenServer`. Send a document to Elasticsearch's percolator.
 
+  * `percolator`   - PID of the current percolator
+  * `index_id`     - Index's id
+  * `documents`    - List of documents in json
+  """
+  def percolate(percolator, index_id, documents) when is_list(documents) do
+    Enum.each(documents, fn(document)-> percolate(percolator, index_id, document) end)
+  end
+
+  @doc """
   Default values of `Funnel.Percolator`.
   """
   def init do
