@@ -123,8 +123,9 @@ defmodule Funnel.Es do
   Delete an index.
   """
   def destroy(index_id) do
-    "/#{namespace(index_id)}"
+    response = "/#{namespace(index_id)}"
       |> delete
+    {response.status_code, response.body}
   end
 
   defp do_unregister(path) do
