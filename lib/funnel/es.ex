@@ -107,6 +107,13 @@ defmodule Funnel.Es do
   end
 
   @doc """
+  Create an empty index.
+  """
+  def create("") do
+    create
+  end
+
+  @doc """
   Create an index with mappings and settings.
 
   * `body`     - Mappings and settings in json
