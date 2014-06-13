@@ -11,3 +11,5 @@ before_install:
 script: mix test
 services:
  - elasticsearch
+ notifications:
+   irc: "irc.freenode.net#funnel"
