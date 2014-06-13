@@ -100,7 +100,10 @@ defmodule Funnel.Es do
   """
   def create do
     response = put("/#{namespace}", "")
-    {response.status_code, response.body}
+    uuid = Funnel.Uuid.generate
+    {:ok, body} = JSEX.decode(response.body)
+    {:ok, serialization} = JSEX.encode([index_id: uuid, body: body])
+    {response.status_code, serialization}
   end
 
   @doc """
