@@ -99,7 +99,8 @@ defmodule Funnel.Es do
   Create an empty index.
   """
   def create do
-    put("/#{namespace}", "")
+    response = put("/#{namespace}", "")
+    {response.status_code, response.body}
   end
 
   @doc """
