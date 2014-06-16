@@ -19,21 +19,11 @@ defmodule Funnel.Percolator do
 
   * `percolator`   - PID of the current percolator
   * `index_id`     - Index's id
-  * `document`     - Document in json
+  * `document`     - Document in json, can be a document, or a list of documents
   """
-  def percolate(percolator, index_id, document) when is_binary(document) do
-    GenServer.cast(percolator, {:percolate, index_id, document})
-  end
-
-  @doc """
-  Wrapper around `GenServer`. Send a document to Elasticsearch's percolator.
-
-  * `percolator`   - PID of the current percolator
-  * `index_id`     - Index's id
-  * `documents`    - List of documents in json
-  """
-  def percolate(percolator, index_id, documents) when is_list(documents) do
-    Enum.each(documents, fn(document)-> percolate(percolator, index_id, document) end)
+  def percolate(percolator, index_id, document) do
+    {:ok, document} = JSEX.decode(document)
+    do_percolate(percolator, index_id, document)
   end
 
   @doc """
@@ -52,6 +42,15 @@ defmodule Funnel.Percolator do
       |> group_by_token
       |> Enum.each(fn(match)-> notify(match, body) end)
     { :noreply, nil}
+  end
+
+  def do_percolate(percolator, index_id, documents) when is_list(documents) do
+    Enum.each(documents, fn(document)-> do_percolate(percolator, index_id, document) end)
+  end
+
+  def do_percolate(percolator, index_id, document) when is_map(document) do
+    {:ok, document} = JSEX.encode(document)
+    GenServer.cast(percolator, {:percolate, index_id, document})
   end
 
   defp group_by_token(collection) do
