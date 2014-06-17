@@ -34,9 +34,8 @@ defmodule Funnel.Es.Asserts do
   end
 
   def assert_query_find(index) do
-    hash = HashDict.new
-    hash = Dict.put(hash, :index_id, index)
-    {status, response} = Funnel.Es.find("token", hash)
+    search_query = %{index_id: index}
+    {status, response} = Funnel.Es.find("token", search_query)
     {:ok, response} = JSEX.decode response
     assert status == 200
     response

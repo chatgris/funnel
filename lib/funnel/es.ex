@@ -80,9 +80,9 @@ defmodule Funnel.Es do
   Returns a list of query for a given token.
 
   * `token`        - User's token. Mandatory.
-  * `search_query` - Query as `HashDict`
+  * `search_query` - Query as `Map`
   """
-  def find(token, search_query \\ HashDict.new) do
+  def find(token, search_query \\ Map.new) do
     index_id = search_query[:index_id] || "*"
     post("/#{namespace(index_id)}/.percolator/_search", QuerySearch.query(token, search_query))
       |> QuerySearch.response
