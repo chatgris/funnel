@@ -37,9 +37,9 @@ defmodule Funnel.Query do
   Returns a list of query for a given token.
 
   * `token`        - User's token. Mandatory.
-  * `search_query` - Query as `HashDict`
+  * `search_query` - Query as `Map`
   """
-  def find(token, search_query \\ HashDict.new) do
+  def find(token, search_query \\ Map.new) do
     Funnel.Es.find(token, search_query)
   end
 end

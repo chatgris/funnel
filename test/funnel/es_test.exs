@@ -53,9 +53,8 @@ defmodule EsTest do
   test "find a query based on token" do
     uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')["query_id"]
     Funnel.Es.refresh
-    hash = HashDict.new
-    hash = Dict.put(hash, :query_id, uuid)
-    {status, response} = Funnel.Es.find("token", hash)
+    search_query = %{query_id: uuid}
+    {status, response} = Funnel.Es.find("token", search_query)
     {:ok, response} = JSEX.decode response
     assert status == 200
     assert Enum.count(response) == 1
