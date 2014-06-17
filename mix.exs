@@ -6,7 +6,7 @@ defmodule Funnel.Mixfile do
       version: "0.0.1",
       compilers: [:elixir, :app],
       compile_path: "tmp/#{Mix.env}/funnel/ebin",
-      elixir: "~> 0.13.3",
+      elixir: "~> 0.14",
       deps: deps ]
   end
 
@@ -18,10 +18,10 @@ defmodule Funnel.Mixfile do
 
   defp deps do
     [ { :httpotion,   github: "myfreeweb/httpotion" },
-      { :jsex,        '~> 2.0' },
+      { :jsex,        "~> 2.0" },
       { :uuid,        github: "travis/erlang-uuid" },
       { :ex_doc,      github: "elixir-lang/ex_doc", only: [:dev, :test] },
-      { :poolboy,     '~> 1.2' }
+      { :poolboy,     "~> 1.2" }
     ]
   end
 end
