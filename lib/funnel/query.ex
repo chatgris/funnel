@@ -7,7 +7,8 @@ defmodule Funnel.Query do
   * `query`    - Query in json
   """
   def create(index_id, token, query) do
-    Funnel.Es.register(index_id, token, query)
+    {status_code, body} = Funnel.Es.register(index_id, token, query)
+    {:ok, status_code, body}
   end
 
   @doc """
@@ -19,7 +20,8 @@ defmodule Funnel.Query do
   * `query`    - Query in json
   """
   def update(index_id, token, uuid, query) do
-    Funnel.Es.register(index_id, token, uuid, query)
+    {status_code, body} = Funnel.Es.register(index_id, token, uuid, query)
+    {:ok, status_code, body}
   end
 
   @doc """
@@ -29,7 +31,8 @@ defmodule Funnel.Query do
   * `uuid`     - Query's id
   """
   def destroy(index_id, token, uuid) do
-    Funnel.Es.unregister(index_id, token, uuid)
+    {status_code, body} = Funnel.Es.unregister(index_id, token, uuid)
+    {:ok, status_code, body}
   end
 
   @doc """
@@ -40,6 +43,7 @@ defmodule Funnel.Query do
   * `search_query` - Query as `Map`
   """
   def find(token, search_query \\ Map.new) do
-    Funnel.Es.find(token, search_query)
+    {status_code, body} = Funnel.Es.find(token, search_query)
+    {:ok, status_code, body}
   end
 end

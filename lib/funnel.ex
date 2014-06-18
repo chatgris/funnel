@@ -18,7 +18,7 @@ defmodule Funnel do
   def register(transport, last_id \\ nil) do
     token = Funnel.Uuid.generate
     register(transport, token, last_id)
-    token
+    {:ok, token}
   end
 
   @doc """
@@ -31,7 +31,7 @@ defmodule Funnel do
   def register(transport, token, last_id) do
     {:ok, _transistor} = Funnel.Transistors.add token
     Funnel.Transistor.add(transport, token, last_id)
-    token
+    {:ok, token}
   end
 
   @doc """
@@ -41,6 +41,6 @@ defmodule Funnel do
   * `body`     - Document in json
   """
   def percolate(index_id, body) do
-    Funnel.PercolatorPool.percolate index_id, body
+    {Funnel.PercolatorPool.percolate(index_id, body)}
   end
 end

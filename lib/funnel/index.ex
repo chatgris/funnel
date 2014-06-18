@@ -3,16 +3,18 @@ defmodule Funnel.Index do
   Create an empty index.
   """
   def create do
-    Funnel.Es.create
+    {status_code, body} = Funnel.Es.create
+    {:ok, status_code, body}
   end
 
   @doc """
   Create an index with mappings and settings.
 
-  * `body`     - Mappings and settings in json
+  * `settings`     - Mappings and settings in json
   """
-  def create(options) do
-    Funnel.Es.create(options)
+  def create(settings) do
+    {status_code, body} = Funnel.Es.create(settings)
+    {:ok, status_code, body}
   end
 
   @doc """
@@ -21,6 +23,7 @@ defmodule Funnel.Index do
   * `index_id` - Index's id
   """
   def destroy(index_id) do
-    Funnel.Es.destroy(index_id)
+    {status_code, body} = Funnel.Es.destroy(index_id)
+    {:ok, status_code, body}
   end
 end

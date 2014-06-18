@@ -8,7 +8,7 @@ defmodule Funnel.PercolatorTest do
   end
 
   test "notify transistor" do
-    token = Funnel.register(self)
+    {:ok, token} = Funnel.register(self)
     index_id = "percolator_index"
     uuid = assert_query_creation('{"query" : {"match" : {"message" : "elasticsearch"}}}', index_id, token)["query_id"]
     message = "{\"doc\":{\"message\":\"this new elasticsearch percolator feature is nice, borat style\"}}"
@@ -23,7 +23,7 @@ defmodule Funnel.PercolatorTest do
   end
 
   test "notify transistor with a message matching several queries" do
-    token = Funnel.register(self)
+    {:ok, token} = Funnel.register(self)
     index_id = "percolator_index_multiple"
     uuid1 = assert_query_creation('{"query" : {"match" : {"message" : "thanks"}}}', index_id, token)["query_id"]
     uuid2 = assert_query_creation('{"query" : {"match" : {"message" : "fish"}}}', index_id, token)["query_id"]
@@ -43,7 +43,7 @@ defmodule Funnel.PercolatorTest do
   end
 
   test "notify transistor with a message matching several queries, bulk edition" do
-    token = Funnel.register(self)
+    {:ok, token} = Funnel.register(self)
     index_id = "percolator_index_multiple"
     uuid1 = assert_query_creation('{"query" : {"match" : {"message" : "thanks"}}}', index_id, token)["query_id"]
     uuid2 = assert_query_creation('{"query" : {"match" : {"message" : "fish"}}}', index_id, token)["query_id"]
