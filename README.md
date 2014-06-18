@@ -75,4 +75,12 @@ funnel's API.
 ```elixir
 Funnel.register(transport)
 Funnel.register(transport, last_id)
+Funnel.Index.create
+Funnel.Index.create(settings)
+Funnel.Index.destroy(index_id)
+Funnel.Query.create(index_id, token, query)
+Funnel.Query.update(index_id, token, query_id, query)
+Funnel.Query.destroy(index_id, token, query_id)
+Funnel.Query.find(token, search_query)
+Funnel.percolate(index_id, message)
 ```
