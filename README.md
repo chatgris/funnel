@@ -12,6 +12,8 @@ Funnel allow to register users / devices, associates some queries to user.
 The common usecase is to store a query from a user and notify this user when a
 new document matching this query is available.
 
+Check out this [example](https://github.com/AF83/funnel_http) for a complete http api using Funnel dsl.
+
 ## Installing things
 
 You can use Funnel in your projects with the following steps:
