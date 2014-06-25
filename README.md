@@ -145,7 +145,7 @@ query = '{"query" : {"match" : {"message" : "funnel"}}}' |> IO.iodata_to_binary
 #### Submitting a document to the percolator
 
 ``` elixir
-message = '{"doc" : {"message" : "this new elasticsearch percolator feature is nice, borat style"}}' |> IO.iodata_to_binary
+message = '{"message" : "this new elasticsearch percolator feature is nice, borat style"}' |> IO.iodata_to_binary
 Funnel.percolate(index_id, message)
 {:ok}
 ```
