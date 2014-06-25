@@ -29,7 +29,7 @@ defmodule EsTest do
 
   test "returns queries from percolator" do
     uuid = assert_query_creation('{"query" : {"match" : {"message" : "elasticsearch"}}}')["query_id"]
-    message = '{"doc" : {"message" : "this new elasticsearch percolator feature is nice, borat style"}}'
+    message = '{"message" : "this new elasticsearch percolator feature is nice, borat style"}' |> IO.iodata_to_binary
     Funnel.Es.refresh
     Funnel.Es.percolate("funnel", message)
       |> Enum.each(fn(match) -> assert_percolate(match, uuid) end)
@@ -37,7 +37,7 @@ defmodule EsTest do
   end
 
   test "returns empty from percolator on non match" do
-    message = '{"doc" : {"message" : "Ohai"}}'
+    message = '{"message" : "Ohai"}' |> IO.iodata_to_binary
     assert Funnel.Es.percolate("funnel", message) == []
   end
 

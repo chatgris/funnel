@@ -98,7 +98,7 @@ defmodule FunnelTest do
   end
 
   test "submit a message to the percolator" do
-    message = '{"doc" : {"message" : "this new elasticsearch percolator feature is nice, borat style"}}' |> IO.iodata_to_binary
+    message = '{"message" : "this new elasticsearch percolator feature is nice, borat style"}' |> IO.iodata_to_binary
     assert Funnel.percolate("funnel", message) == {:ok}
   end
 end
