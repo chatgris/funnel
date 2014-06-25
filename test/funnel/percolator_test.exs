@@ -11,7 +11,7 @@ defmodule Funnel.PercolatorTest do
     {:ok, token} = Funnel.register(self)
     index_id = "percolator_index"
     uuid = assert_query_creation('{"query" : {"match" : {"message" : "elasticsearch"}}}', index_id, token)["query_id"]
-    message = "{\"doc\":{\"message\":\"this new elasticsearch percolator feature is nice, borat style\"}}"
+    message = "{\"message\":\"this new elasticsearch percolator feature is nice, borat style\"}"
 
     Funnel.Es.refresh
     Funnel.percolate(index_id, message)
@@ -27,7 +27,7 @@ defmodule Funnel.PercolatorTest do
     index_id = "percolator_index_multiple"
     uuid1 = assert_query_creation('{"query" : {"match" : {"message" : "thanks"}}}', index_id, token)["query_id"]
     uuid2 = assert_query_creation('{"query" : {"match" : {"message" : "fish"}}}', index_id, token)["query_id"]
-    message = "{\"doc\" : {\"message\":\"So long, and thanks for all the fish\"}}"
+    message = "{\"message\":\"So long, and thanks for all the fish\"}"
 
     Funnel.percolate(index_id, message)
 
@@ -47,7 +47,7 @@ defmodule Funnel.PercolatorTest do
     index_id = "percolator_index_multiple"
     uuid1 = assert_query_creation('{"query" : {"match" : {"message" : "thanks"}}}', index_id, token)["query_id"]
     uuid2 = assert_query_creation('{"query" : {"match" : {"message" : "fish"}}}', index_id, token)["query_id"]
-    messages = "[{\"doc\" : {\"message\":\"So long, and thanks for all the fish\"}},{\"doc\":{\"message\":\"Say thanks to the fish\"}}]"
+    messages = "[{\"message\":\"So long, and thanks for all the fish\"},{\"message\":\"Say thanks to the fish\"}]"
 
     Funnel.percolate(index_id, messages)
 

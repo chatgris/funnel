@@ -24,6 +24,7 @@ defmodule Funnel.Es do
   Returns a list of query_id matched by the Elasticsearch percolation.
   """
   def percolate(index_id, body) do
+    {:ok, body} = format_document(body)
     percolation = post("/#{namespace(index_id)}/message/_percolate", body)
     {:ok, body} = JSEX.decode percolation.body
     body["matches"] || []
@@ -153,5 +154,11 @@ defmodule Funnel.Es do
       nil  -> "http://localhost:9200"
       host -> host
     end
+  end
+
+  defp format_document(document) do
+    {:ok, document} = JSEX.decode(document)
+    %{doc: document}
+      |> JSEX.encode
   end
 end
