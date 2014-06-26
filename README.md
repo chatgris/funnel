@@ -99,15 +99,15 @@ This example will create an index with specific settings:
 ``` elixir
 settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" :{"_source" : { "enabled" : false },"properties" : {"field1" : { "type" :"string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary
 {:ok, _status_code, body} = Funnel.Index.create(settings)
-{:ok, 200,"{\"index_id\":\"a87713a4a284414f970297b68a08fc9c\",\"body\":{\"acknowledged\":true}}"}
+{:ok, 200, %{"body" => %{"acknowledged" => true},"index_id" => "3994bf6c03df412e8b1b05d4aca7a83c"}}
 ```
 
 
 ### Deleting an index
 
 ``` elixir
-{:ok, status_code, body} = Funnel.Index.destroy("422c964929fd4f39a85eca541341984a")
-{:ok, 200, "{\"acknowledged\":true}"}
+{:ok, status_code, body} = Funnel.Index.destroy("3994bf6c03df412e8b1b05d4aca7a83c")
+{:ok, 200, %{"acknowledged" => true}}
 ```
 
 ### Creating a query
@@ -115,31 +115,31 @@ settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" :{"_sou
 ``` elixir
 query = '{"query" : {"match" : {"message" : "funnel"}}}' |> IO.iodata_to_binary
 {:ok, status_code, body} = Funnel.Query.create(index_id, token, query)
-{:ok, 201, "{\"query_id\":\"2cf60bc676cb496996c16e405011750b\",\"index_id\":\"936f7a079cec4d59b23a08f4089af9b3\",\"body\":{\"_id\":\"token-2cf60bc676cb496996c16e405011750b\",\"_index\":\"936f7a079cec4d59b23a08f4089af9b3_test\",\"_type\":\".percolator\",\"_version\":1,\"created\":true}}"}
+{:ok, 201, %{"body" => %{"_id" => "287eae87d5774f2a9d02f5a5dd66856d-0398f4e1a6a34ea4b7ede0c1b7f40f38", "_index" => "3994bf6c03df412e8b1b05d4aca7a83c_dev", "_type" => ".percolator", "_version" => 1, "created" => true}, "index_id" => "3994bf6c03df412e8b1b05d4aca7a83c", "query_id" => "0398f4e1a6a34ea4b7ede0c1b7f40f38"}}
 ```
 
 #### Updating a query
 
 ``` elixir
 {:ok, status_code, body} = Funnel.Query.update(index_id, token, query_id, query)
-{:ok, 200, "{\"query_id\":\"2cf60bc676cb496996c16e405011750b\",\"index_id\":\"936f7a079cec4d59b23a08f4089af9b3\",\"body\":{\"_id\":\"token-2cf60bc676cb496996c16e405011750b\",\"_index\":\"936f7a079cec4d59b23a08f4089af9b3_test\",\"_type\":\".percolator\",\"_version\":2,\"created\":false}}"}
+{:ok, 200, %{"body" => %{"_id" => "287eae87d5774f2a9d02f5a5dd66856d-0398f4e1a6a34ea4b7ede0c1b7f40f38", "_index" => "3994bf6c03df412e8b1b05d4aca7a83c_dev", "_type" => ".percolator", "_version" => 2, "created" => false}, "index_id" => "3994bf6c03df412e8b1b05d4aca7a83c", "query_id" => "0398f4e1a6a34ea4b7ede0c1b7f40f38"}}
 ```
 
 #### Deleting a query
 
 ``` elixir
 {:ok, status_code, body} = Funnel.Query.destroy(index_id, token, query_id)
-:ok, 200, "{\"found\":true,\"_index\":\"529546cb498c4efea03457888e4a86ad_test\",\"_type\":\".percolator\",\"_id\":\"token-f32dd53f203f4cc1a7b9e082fa5fcfcf\",\"_version\":2}"}
+{:ok, 200, %{"_id" => "287eae87d5774f2a9d02f5a5dd66856d-0398f4e1a6a34ea4b7ede0c1b7f40f38", "_index" => "3994bf6c03df412e8b1b05d4aca7a83c_dev", "_type" => ".percolator", "_version" => 3, "found" => true}}
 ```
 
 #### Finding queries
 
 ``` elixir
 {:ok, status_code, body} = Funnel.Query.find(token)
-:ok, 200, "[{\"query_id\":\"4f122313862e494b8810f073c27cf43d\",\"index_id\":\"b79d2e9ff8c949e08ba98c4d8c216547\",\"score\":1.0}]"}
+{:ok, 200, [%{"query_id" => "4f122313862e494b8810f073c27cf43d", "index_id" => "b79d2e9ff8c949e08ba98c4d8c216547", "score" => 1.0}]}
 
 {:ok, status_code, body} = Funnel.Query.find(token, %{index_id: index_id})
-:ok, 200, "[{\"query_id\":\"4f122313862e494b8810f073c27cf43d\",\"index_id\":\"b79d2e9ff8c949e08ba98c4d8c216547\",\"score\":1.0}]"}
+{:ok, 200, [{"query_id" => "4f122313862e494b8810f073c27cf43d", "index_id" => "b79d2e9ff8c949e08ba98c4d8c216547", "score" => 1.0}]}
 ```
 
 #### Submitting a document to the percolator

@@ -8,12 +8,10 @@ defmodule FunnelTest do
 
   def assert_create_query do
     {:ok, _status_code, body} = create_index
-    {:ok, body} = JSEX.decode body
     index_id = body["index_id"]
     query = '{"query" : {"match" : {"message" : "elasticsearch"}}}' |> IO.iodata_to_binary
 
     {:ok, status_code, body} = Funnel.Query.create(index_id, "token", query)
-    {:ok, body} = JSEX.decode body
     query_id = body["query_id"]
     assert status_code == 201
     assert body != nil
@@ -27,7 +25,6 @@ defmodule FunnelTest do
 
   test "create an empty index" do
     {:ok, _status_code, body} = Funnel.Index.create
-    {:ok, body} = JSEX.decode body
     index_id = body["index_id"]
     assert size(index_id) == 32
     Funnel.Es.destroy(index_id)
@@ -35,7 +32,6 @@ defmodule FunnelTest do
 
   test "create an index with settings" do
     {:ok, _status_code, body} = create_index
-    {:ok, body} = JSEX.decode body
     index_id = body["index_id"]
     assert size(index_id) == 32
     Funnel.Es.destroy(index_id)
@@ -43,7 +39,6 @@ defmodule FunnelTest do
 
   test "delete an index" do
     {:ok, _status_code, body} = create_index
-    {:ok, body} = JSEX.decode body
     index_id = body["index_id"]
     Funnel.Es.refresh
     {:ok, status_code, body} = Funnel.Index.destroy(index_id)
@@ -80,7 +75,6 @@ defmodule FunnelTest do
     Funnel.Es.refresh
     {:ok, status_code, body} = Funnel.Query.find("token")
     assert status_code == 200
-    {:ok, body} = JSEX.decode(body)
     assert Enum.count(body) == 1
     Funnel.Query.destroy(index_id, "token", query_id)
     Funnel.Es.destroy(index_id)
@@ -91,7 +85,6 @@ defmodule FunnelTest do
     Funnel.Es.refresh
     {:ok, status_code, body} = Funnel.Query.find("token", %{index_id: index_id})
     assert status_code == 200
-    {:ok, body} = JSEX.decode(body)
     assert Enum.count(body) == 1
     Funnel.Query.destroy(index_id, "token", query_id)
     Funnel.Es.destroy(index_id)

@@ -1,10 +1,11 @@
 defmodule Funnel.Index do
+  import Funnel.Responder
+
   @doc """
   Create an empty index.
   """
   def create do
-    {status_code, body} = Funnel.Es.create
-    {:ok, status_code, body}
+    Funnel.Es.create |> respond
   end
 
   @doc """
@@ -13,8 +14,7 @@ defmodule Funnel.Index do
   * `settings`     - Mappings and settings in json
   """
   def create(settings) do
-    {status_code, body} = Funnel.Es.create(settings)
-    {:ok, status_code, body}
+    Funnel.Es.create(settings) |> respond
   end
 
   @doc """
@@ -23,7 +23,6 @@ defmodule Funnel.Index do
   * `index_id` - Index's id
   """
   def destroy(index_id) do
-    {status_code, body} = Funnel.Es.destroy(index_id)
-    {:ok, status_code, body}
+    Funnel.Es.destroy(index_id) |> respond
   end
 end
