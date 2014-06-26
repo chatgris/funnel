@@ -91,7 +91,7 @@ This example will create an empty index:
 
 ```elixir
 {:ok, status_code, body} = Funnel.Index.create
-{:ok, 200, "{\"index_id\":\"e431710007a640fa947eba4f40b00e0f\",\"body\":{\"acknowledged\":true}}"}
+{:ok, 200, %{"body" => %{"acknowledged" => true}, "index_id" => "e4680d88db914ed4854acb8a1a8f317d"}}
 ```
 
 This example will create an index with specific settings:
@@ -139,7 +139,7 @@ query = '{"query" : {"match" : {"message" : "funnel"}}}' |> IO.iodata_to_binary
 {:ok, 200, [%{"query_id" => "4f122313862e494b8810f073c27cf43d", "index_id" => "b79d2e9ff8c949e08ba98c4d8c216547", "score" => 1.0}]}
 
 {:ok, status_code, body} = Funnel.Query.find(token, %{index_id: index_id})
-{:ok, 200, [{"query_id" => "4f122313862e494b8810f073c27cf43d", "index_id" => "b79d2e9ff8c949e08ba98c4d8c216547", "score" => 1.0}]}
+{:ok, 200, [%{"query_id" => "4f122313862e494b8810f073c27cf43d", "index_id" => "b79d2e9ff8c949e08ba98c4d8c216547", "score" => 1.0}]}
 ```
 
 #### Submitting a document to the percolator
