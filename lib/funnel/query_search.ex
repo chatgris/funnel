@@ -11,7 +11,7 @@ defmodule Funnel.QuerySearch do
 
   def response(http) do
     {:ok, body} = decode http.body
-    {:ok, body} = Enum.reduce(body["hits"]["hits"], [], &collect_query/2)
+    {:ok, body} = Enum.reduce(body["hits"]["hits"] || [], [], &collect_query/2)
       |> encode
     {http.status_code, body}
   end
