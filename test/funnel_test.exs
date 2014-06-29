@@ -26,14 +26,14 @@ defmodule FunnelTest do
   test "create an empty index" do
     {:ok, _status_code, body} = Funnel.Index.create
     index_id = body["index_id"]
-    assert size(index_id) == 32
+    assert byte_size(index_id) == 32
     Funnel.Es.destroy(index_id)
   end
 
   test "create an index with settings" do
     {:ok, _status_code, body} = create_index
     index_id = body["index_id"]
-    assert size(index_id) == 32
+    assert byte_size(index_id) == 32
     Funnel.Es.destroy(index_id)
   end
 
