@@ -17,7 +17,7 @@ defmodule EsTest do
 
   test "returns a body on query creation" do
     body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')
-    assert size(body["query_id"]) == 32
+    assert byte_size(body["query_id"]) == 32
     assert body["index_id"] == "funnel"
     Funnel.Es.unregister("funnel", "token", body["query_id"])
   end
@@ -46,7 +46,7 @@ defmodule EsTest do
     {_, response} = Funnel.Es.create(body)
     {:ok, body} = JSEX.decode response
     uuid = body["index_id"]
-    assert size(uuid) == 32
+    assert byte_size(uuid) == 32
     Funnel.Es.destroy(uuid)
   end
 
