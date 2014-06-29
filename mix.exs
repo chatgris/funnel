@@ -20,7 +20,7 @@ defmodule Funnel.Mixfile do
     [ { :httpotion,   github: "myfreeweb/httpotion" },
       { :jsex,        "~> 2.0" },
       { :uuid,        github: "travis/erlang-uuid" },
-      { :ex_doc,      github: "elixir-lang/ex_doc", only: [:dev, :test] },
+      { :ex_doc,      github: "elixir-lang/ex_doc", only: [:dev] },
       { :poolboy,     "~> 1.2" }
     ]
   end
