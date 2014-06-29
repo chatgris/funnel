@@ -85,7 +85,7 @@ defmodule Funnel.Transistor do
   end
 
   defp extract_name(token) do
-    token |> binary_to_atom
+    token |> String.to_atom
   end
 
   defp find_or_start(name) do
