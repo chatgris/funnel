@@ -76,7 +76,7 @@ defmodule Funnel.Transistor.Cache do
   end
 
   defp name(token) do
-    binary_to_atom("#{token}_cache")
+    "#{token}_cache" |> String.to_atom
   end
 
   defp filter(items, nil) do
