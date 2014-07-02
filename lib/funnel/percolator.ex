@@ -76,7 +76,7 @@ defmodule Funnel.Percolator do
     id = Funnel.Uuid.generate
 
     {:ok, cache} = Funnel.Caches.add token
-    {:ok, response} = JSEX.encode([query_ids: match[:query_ids], body: body])
+    response = %{query_ids: match[:query_ids], body: body}
 
     Funnel.Transistor.Cache.push(cache, id, response)
     Funnel.Transistor.notify(token, id, response)

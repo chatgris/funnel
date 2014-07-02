@@ -16,8 +16,7 @@ defmodule Funnel.PercolatorTest do
     Funnel.Es.refresh
     Funnel.percolate(index_id, message)
     assert_receive({:chunk, %{id: _, item: item}})
-    {:ok, item} = JSEX.decode item
-    assert item["query_ids"] == [uuid]
+    assert item[:query_ids] == [uuid]
 
     Funnel.Es.unregister(index_id, token, uuid)
   end
@@ -34,8 +33,7 @@ defmodule Funnel.PercolatorTest do
     assert_receive({:chunk, %{id: _, item: item}})
     refute_receive({:chunk, %{id: _, item: _}})
 
-    {:ok, item} = JSEX.decode item
-    assert item["query_ids"] |> Enum.sort == [uuid1, uuid2] |> Enum.sort
+    assert item[:query_ids] |> Enum.sort == [uuid1, uuid2] |> Enum.sort
 
     Funnel.Es.unregister(index_id, token, uuid1)
     Funnel.Es.unregister(index_id, token, uuid2)
@@ -55,8 +53,7 @@ defmodule Funnel.PercolatorTest do
     assert_receive({:chunk, %{id: _, item: item}})
     refute_receive({:chunk, %{id: _, item: _}})
 
-    {:ok, item} = JSEX.decode item
-    assert item["query_ids"] |> Enum.sort == [uuid1, uuid2] |> Enum.sort
+    assert item[:query_ids] |> Enum.sort == [uuid1, uuid2] |> Enum.sort
 
     Funnel.Es.unregister(index_id, token, uuid1)
     Funnel.Es.unregister(index_id, token, uuid2)
