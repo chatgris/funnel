@@ -49,7 +49,8 @@ mix test
 Funnel has this notion of `Funnel.Transport`. Anything implementing the
 `Funnel.Transport` protocol can be a transport.
 
-For the dynamo framework, the protocol would looks like:
+For the [Plug](https://github.com/elixir-lang/plug), the protocol would looks
+like:
 
 ```elixir
 defmodule EventStreamMessage do
@@ -61,9 +62,11 @@ defmodule EventStreamMessage do
   end
 end
 
-defimpl Funnel.Transport, for: Elixir.Dynamo.Cowboy.Connection do
+defimpl Funnel.Transport, for: Elixir.Plug.Conn do
+  import Plug.Conn
+
   def write(conn, %{:id => id, :item => item}) do
-    conn.chunk EventStreamMessage.to_message(id, item)
+    chunk conn, EventStreamMessage.to_message(id, item)
   end
 end
 ```
