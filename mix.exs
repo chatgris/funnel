@@ -7,6 +7,8 @@ defmodule Funnel.Mixfile do
       compilers: [:elixir, :app],
       compile_path: "tmp/#{Mix.env}/funnel/ebin",
       elixir: "~> 0.14",
+      description: description,
+      package: package,
       deps: deps ]
   end
 
@@ -23,5 +25,17 @@ defmodule Funnel.Mixfile do
       { :ex_doc,      github: "elixir-lang/ex_doc", only: [:dev] },
       { :poolboy,     "~> 1.2" }
     ]
+  end
+
+  defp description do
+    """
+    Streaming API built upon ElasticSearch's percolation.
+    """
+  end
+
+  defp package do
+    [ contributors: ["chatgris"],
+      licenses: ["MIT"],
+      links: [ { "Github", "https://github.com/af83/funnel" }]]
   end
 end
