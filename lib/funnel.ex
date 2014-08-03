@@ -1,5 +1,6 @@
 defmodule Funnel do
   use Application
+  require Logger
 
   @doc """
   The application callback used to start this
@@ -29,7 +30,8 @@ defmodule Funnel do
   * `last_id`      - the last id received in the transport
   """
   def register(transport, token, last_id) do
-    {:ok, _transistor} = Funnel.Transistors.add token
+    {:ok, transistor} = Funnel.Transistors.add token
+    Logger.debug "[Register] Token: #{token}"
     Funnel.Transistor.add(transport, token, last_id)
     {:ok, token}
   end
@@ -41,6 +43,7 @@ defmodule Funnel do
   * `body`     - Document in json
   """
   def percolate(index_id, body) do
+    Logger.debug "[Percolator][#{index_id}] Receive body: #{body}"
     {Funnel.PercolatorPool.percolate(index_id, body)}
   end
 end
