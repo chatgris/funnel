@@ -22,7 +22,7 @@ defmodule Funnel.Mixfile do
     [ { :httpoison,   "~> 0.3" },
       { :hackney,     github: "benoitc/hackney", tag: "0.13.0"},
       { :jsex,        "~> 2.0" },
-      { :uuid,        github: "travis/erlang-uuid" },
+      { :uuid,        "~> 0.1.3" },
       { :ex_doc,      github: "elixir-lang/ex_doc", only: [:dev] },
       { :poolboy,     "~> 1.2" }
     ]

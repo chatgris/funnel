@@ -9,6 +9,6 @@ defmodule Funnel.Uuid do
   Returns a sweet uuid.
   """
   def generate do
-    String.replace(to_string(:uuid.to_string(:uuid.v4())), "-", "")
+    UUID.uuid4(:hex)
   end
 end
