@@ -1,5 +1,6 @@
 defmodule Funnel.Query do
   import Funnel.Responder
+  require Logger
 
   @doc """
   Create a query against an Elasticsearch index.
@@ -9,6 +10,7 @@ defmodule Funnel.Query do
   * `query`    - Query in json
   """
   def create(index_id, token, query) do
+    Logger.debug "[Query][Index: #{index_id}]: Create #{query}"
     Funnel.Es.register(index_id, token, query) |> respond
   end
 
@@ -21,6 +23,7 @@ defmodule Funnel.Query do
   * `query`    - Query in json
   """
   def update(index_id, token, uuid, query) do
+    Logger.debug "[Query][Index: #{index_id}]: Update #{uuid} with #{query}"
     Funnel.Es.register(index_id, token, uuid, query) |> respond
   end
 
@@ -31,6 +34,7 @@ defmodule Funnel.Query do
   * `uuid`     - Query's id
   """
   def destroy(index_id, token, uuid) do
+    Logger.debug "[Query][Index: #{index_id}]: Destroy #{uuid}"
     Funnel.Es.unregister(index_id, token, uuid) |> respond
   end
 
