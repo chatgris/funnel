@@ -20,21 +20,21 @@ You can use Funnel in your projects with the following steps:
 
 1. Adding Funnel to your `mix.exs` dependencies:
 
-```elixir
-def deps do
-  [
-    {:funnel, "~> 0.1"}
-  ]
-end
-```
+  ```elixir
+  def deps do
+    [
+      {:funnel, "~> 0.1"}
+    ]
+  end
+  ```
 
 2. List the `:funnel` as your application dependencies:
 
-```elixir
-def application do
-  [applications: [:funnel]]
-end
-```
+  ```elixir
+  def application do
+    [applications: [:funnel]]
+  end
+  ```
 
 ## Testing things
 
