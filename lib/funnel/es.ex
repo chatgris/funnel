@@ -8,7 +8,7 @@ defmodule Funnel.Es do
   * percolate
   """
 
-  use HTTPotion.Base
+  use HTTPoison.Base
   alias Funnel.QuerySearch
 
   @doc """
