@@ -23,7 +23,7 @@ You can use Funnel in your projects with the following steps:
 ```elixir
 def deps do
   [
-    {:funnel, github: "AF83/funnel"},
+    {:funnel, "~> 0.1"}
   ]
 end
 ```
