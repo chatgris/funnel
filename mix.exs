@@ -3,7 +3,7 @@ defmodule Funnel.Mixfile do
 
   def project do
     [ app: :funnel,
-      version: "0.1.0",
+      version: "0.2.0",
       compilers: [:elixir, :app],
       compile_path: "tmp/#{Mix.env}/funnel/ebin",
       elixir: "~> 0.15",
