@@ -121,21 +121,21 @@ query = '{"query" : {"match" : {"message" : "funnel"}}}' |> IO.iodata_to_binary
 {:ok, 201, %{"body" => %{"_id" => "287eae87d5774f2a9d02f5a5dd66856d-0398f4e1a6a34ea4b7ede0c1b7f40f38", "_index" => "3994bf6c03df412e8b1b05d4aca7a83c_dev", "_type" => ".percolator", "_version" => 1, "created" => true}, "index_id" => "3994bf6c03df412e8b1b05d4aca7a83c", "query_id" => "0398f4e1a6a34ea4b7ede0c1b7f40f38"}}
 ```
 
-#### Updating a query
+### Updating a query
 
 ``` elixir
 {:ok, status_code, body} = Funnel.Query.update(index_id, token, query_id, query)
 {:ok, 200, %{"body" => %{"_id" => "287eae87d5774f2a9d02f5a5dd66856d-0398f4e1a6a34ea4b7ede0c1b7f40f38", "_index" => "3994bf6c03df412e8b1b05d4aca7a83c_dev", "_type" => ".percolator", "_version" => 2, "created" => false}, "index_id" => "3994bf6c03df412e8b1b05d4aca7a83c", "query_id" => "0398f4e1a6a34ea4b7ede0c1b7f40f38"}}
 ```
 
-#### Deleting a query
+### Deleting a query
 
 ``` elixir
 {:ok, status_code, body} = Funnel.Query.destroy(index_id, token, query_id)
 {:ok, 200, %{"_id" => "287eae87d5774f2a9d02f5a5dd66856d-0398f4e1a6a34ea4b7ede0c1b7f40f38", "_index" => "3994bf6c03df412e8b1b05d4aca7a83c_dev", "_type" => ".percolator", "_version" => 3, "found" => true}}
 ```
 
-#### Finding queries
+### Finding queries
 
 ``` elixir
 {:ok, status_code, body} = Funnel.Query.find(token)
@@ -145,7 +145,7 @@ query = '{"query" : {"match" : {"message" : "funnel"}}}' |> IO.iodata_to_binary
 {:ok, 200, [%{"query_id" => "4f122313862e494b8810f073c27cf43d", "index_id" => "b79d2e9ff8c949e08ba98c4d8c216547", "score" => 1.0}]}
 ```
 
-#### Submitting a document to the percolator
+### Submitting a document to the percolator
 
 ``` elixir
 message = '{"message" : "this new elasticsearch percolator feature is nice, borat style"}' |> IO.iodata_to_binary
