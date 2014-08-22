@@ -150,10 +150,7 @@ defmodule Funnel.Es do
   end
 
   defp host do
-    case System.get_env("FUNNEL_ES_HOST") do
-      nil  -> "http://localhost:9200"
-      host -> host
-    end
+    Application.get_env(:funnel, :es_host)
   end
 
   defp format_document(document) do

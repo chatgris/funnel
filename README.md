@@ -36,6 +36,17 @@ You can use Funnel in your projects with the following steps:
   end
   ```
 
+3. Add this sample configuration to `config/config.exs`.
+
+  ```elixir
+  use Mix.Config
+
+  config :funnel,
+    es_host: "http://localhost:9200",
+    percolator_pool_size: 100,
+    percolator_pool_max_overflow: 1000
+  ```
+
 ## Testing things
 
 ``` shell

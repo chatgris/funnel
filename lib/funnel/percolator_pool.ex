@@ -37,16 +37,10 @@ defmodule Funnel.PercolatorPool do
   end
 
   defp size do
-    case System.get_env("FUNNEL_POOL_SIZE") do
-      nil -> 100
-      max -> max |> String.to_integer
-    end
+    Application.get_env(:funnel, :percolator_pool_size)
   end
 
   defp max_overflow do
-    case System.get_env("FUNNEL_POOL_MAX_OVERFLOW") do
-      nil -> 1000
-      max -> max |> String.to_integer
-    end
+    Application.get_env(:funnel, :percolator_pool_max_overflow)
   end
 end
