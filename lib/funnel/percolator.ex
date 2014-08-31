@@ -22,7 +22,7 @@ defmodule Funnel.Percolator do
   * `document`     - Document in json, can be a document, or a list of documents
   """
   def percolate(percolator, index_id, document) do
-    {:ok, document} = JSEX.decode(document)
+    {:ok, document} = Poison.decode(document)
     do_percolate(percolator, index_id, document)
   end
 
@@ -49,7 +49,7 @@ defmodule Funnel.Percolator do
   end
 
   def do_percolate(percolator, index_id, document) when is_map(document) do
-    {:ok, document} = JSEX.encode(document)
+    {:ok, document} = Poison.encode(document)
     GenServer.cast(percolator, {:percolate, index_id, document})
   end
 

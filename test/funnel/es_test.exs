@@ -44,7 +44,7 @@ defmodule EsTest do
   test "creates a new index" do
     body = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"field1" : { "type" : "string", "index" : "not_analyzed" }}}}}'
     {_, response} = Funnel.Es.create(body)
-    {:ok, body} = JSEX.decode response
+    {:ok, body} = Poison.decode response
     uuid = body["index_id"]
     assert byte_size(uuid) == 32
     Funnel.Es.destroy(uuid)
@@ -55,7 +55,7 @@ defmodule EsTest do
     Funnel.Es.refresh
     search_query = %{query_id: uuid}
     {status, response} = Funnel.Es.find("token", search_query)
-    {:ok, response} = JSEX.decode response
+    {:ok, response} = Poison.decode response
     assert status == 200
     assert Enum.count(response) == 1
     item = Enum.at(response, 0)

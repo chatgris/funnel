@@ -1,5 +1,5 @@
 defmodule Funnel.QuerySearch do
-  import JSEX, only: [decode: 1, encode: 1]
+  import Poison, only: [decode: 1, encode: 1]
 
   def query(token, search_query) do
     query_id = search_query[:query_id] || "*"
@@ -21,11 +21,11 @@ defmodule Funnel.QuerySearch do
   end
 
   defp serialize_query(query) do
-    [
+    %{
       query_id: extract_query_id(query),
       index_id: extract_index_id(query),
       score: query["_score"]
-    ]
+    }
   end
 
   defp extract_index_id(query) do

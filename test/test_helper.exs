@@ -21,14 +21,14 @@ defmodule Funnel.Es.Asserts do
 
   def assert_query_creation(query, index \\ "funnel", token \\ "token") do
     {status, response} = Funnel.Es.register(index, token, query)
-    {:ok, body} = JSEX.decode response
+    {:ok, body} = Poison.decode response
     assert status == 201
     body
   end
 
   def assert_query_update(query, uuid, index \\ "funnel") do
     {status, response} = Funnel.Es.register(index, "token", uuid, query)
-    {:ok, body} = JSEX.decode response
+    {:ok, body} = Poison.decode response
     assert status == 200
     body
   end
@@ -36,14 +36,14 @@ defmodule Funnel.Es.Asserts do
   def assert_query_find(index) do
     search_query = %{index_id: index}
     {status, response} = Funnel.Es.find("token", search_query)
-    {:ok, response} = JSEX.decode response
+    {:ok, response} = Poison.decode response
     assert status == 200
     response
   end
 
   def assert_query_find do
     {status, response} = Funnel.Es.find("token")
-    {:ok, response} = JSEX.decode response
+    {:ok, response} = Poison.decode response
     assert status == 200
     response
   end

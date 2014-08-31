@@ -26,7 +26,7 @@ defmodule Funnel.Es do
   def percolate(index_id, body) do
     {:ok, body} = format_document(body)
     percolation = post("/#{namespace(index_id)}/message/_percolate", body)
-    {:ok, body} = JSEX.decode percolation.body
+    {:ok, body} = Poison.decode percolation.body
     body["matches"] || []
   end
 
@@ -52,8 +52,8 @@ defmodule Funnel.Es do
   def register(index_id, token, uuid, query) do
     id = "#{token}-#{uuid}"
     percolation = put("/#{index_id}_#{Mix.env}/.percolator/#{id}", query)
-    {:ok, body} = JSEX.decode(percolation.body)
-    {:ok, response} = JSEX.encode([query_id: uuid, index_id: index_id, body: body])
+    {:ok, body} = Poison.decode(percolation.body)
+    {:ok, response} = Poison.encode(%{query_id: uuid, index_id: index_id, body: body})
     {percolation.status_code, response}
   end
 
@@ -102,8 +102,8 @@ defmodule Funnel.Es do
   def create do
     response = put("/#{namespace}", "")
     uuid = Funnel.Uuid.generate
-    {:ok, body} = JSEX.decode(response.body)
-    {:ok, serialization} = JSEX.encode([index_id: uuid, body: body])
+    {:ok, body} = Poison.decode(response.body)
+    {:ok, serialization} = Poison.encode(%{index_id: uuid, body: body})
     {response.status_code, serialization}
   end
 
@@ -122,8 +122,8 @@ defmodule Funnel.Es do
   def create(body) do
     uuid = Funnel.Uuid.generate
     response = post("/#{namespace(uuid)}", body)
-    {:ok, body} = JSEX.decode(response.body)
-    {:ok, serialization} = JSEX.encode([index_id: uuid, body: body])
+    {:ok, body} = Poison.decode(response.body)
+    {:ok, serialization} = Poison.encode(%{index_id: uuid, body: body})
     {response.status_code, serialization}
   end
 
@@ -154,8 +154,8 @@ defmodule Funnel.Es do
   end
 
   defp format_document(document) do
-    {:ok, document} = JSEX.decode(document)
+    {:ok, document} = Poison.decode(document)
     %{doc: document}
-      |> JSEX.encode
+      |> Poison.encode
   end
 end
