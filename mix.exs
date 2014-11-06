@@ -34,8 +34,10 @@ defmodule Funnel.Mixfile do
   end
 
   defp package do
-    [ contributors: ["chatgris"],
+    [
+      contributors: ["chatgris"],
       licenses: ["MIT"],
-      links: [ { "Github", "https://github.com/af83/funnel" }]]
+      links: %{"Github" => "https://github.com/chatgris/funnel"}
+    ]
   end
 end
