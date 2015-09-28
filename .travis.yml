@@ -12,3 +12,5 @@ elixir:
   - 1.0.2
 services:
  - elasticsearch
+before_script:
+  - sleep 10
