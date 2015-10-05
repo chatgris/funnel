@@ -15,7 +15,7 @@ use Mix.Config
 #       format: "$time $metadata[$level] $message\n"
 
 config :funnel,
-  es_host: "http://elasticsearch:9200",
+  es_host: System.get_env("ELASTICSEARCH"),
   percolator_pool_size: 100,
   percolator_pool_max_overflow: 1000
 

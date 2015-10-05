@@ -13,3 +13,4 @@ dev:
     - .mix:/root/.mix
   environment:
     - MIX_ENV=test
+    - ELASTICSEARCH=http://elasticsearch:9200
