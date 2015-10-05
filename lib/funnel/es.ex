@@ -25,7 +25,7 @@ defmodule Funnel.Es do
   """
   def percolate(index_id, body) do
     {:ok, body} = format_document(body)
-    percolation = post("/#{namespace(index_id)}/message/_percolate", body)
+    {:ok, percolation} = post("/#{namespace(index_id)}/message/_percolate", body)
     {:ok, body} = Poison.decode percolation.body
     body["matches"] || []
   end
@@ -51,7 +51,7 @@ defmodule Funnel.Es do
   """
   def register(index_id, token, uuid, query) do
     id = "#{token}-#{uuid}"
-    percolation = put("/#{index_id}_#{Mix.env}/.percolator/#{id}", query)
+    {:ok, percolation} = put("/#{index_id}_#{Mix.env}/.percolator/#{id}", query)
     {:ok, body} = Poison.decode(percolation.body)
     {:ok, response} = Poison.encode(%{query_id: uuid, index_id: index_id, body: body})
     {percolation.status_code, response}
@@ -63,7 +63,7 @@ defmodule Funnel.Es do
   * `index_id` - Index's id
   """
   def unregister(index_id) do
-    do_unregister("/_percolator/#{namespace(index_id)}")
+    do_unregister("/#{namespace(index_id)}/.percolator/")
   end
 
   @doc """
@@ -100,7 +100,7 @@ defmodule Funnel.Es do
   Create an empty index.
   """
   def create do
-    response = put("/#{namespace}", "")
+    {:ok, response} = put("/#{namespace}", "")
     uuid = Funnel.Uuid.generate
     {:ok, body} = Poison.decode(response.body)
     {:ok, serialization} = Poison.encode(%{index_id: uuid, body: body})
@@ -121,7 +121,19 @@ defmodule Funnel.Es do
   """
   def create(body) do
     uuid = Funnel.Uuid.generate
-    response = post("/#{namespace(uuid)}", body)
+    {:ok, response} = post("/#{namespace(uuid)}", body)
+    {:ok, body} = Poison.decode(response.body)
+    {:ok, serialization} = Poison.encode(%{index_id: uuid, body: body})
+    {response.status_code, serialization}
+  end
+
+  @doc """
+  Create an index with mappings and settings.
+
+  * `body`     - Mappings and settings in json
+  """
+  def create(body, uuid) do
+    {:ok, response} = post("/#{namespace(uuid)}", body)
     {:ok, body} = Poison.decode(response.body)
     {:ok, serialization} = Poison.encode(%{index_id: uuid, body: body})
     {response.status_code, serialization}
@@ -131,13 +143,13 @@ defmodule Funnel.Es do
   Delete an index.
   """
   def destroy(index_id) do
-    response = "/#{namespace(index_id)}"
+    {:ok, response} = "/#{namespace(index_id)}"
       |> delete
     {response.status_code, response.body}
   end
 
   defp do_unregister(path) do
-    del = delete path
+    {:ok, del} = delete path
     {del.status_code, del.body}
   end
 

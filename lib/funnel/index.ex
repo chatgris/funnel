@@ -21,6 +21,16 @@ defmodule Funnel.Index do
   end
 
   @doc """
+  Create an index with mappings and settings.
+
+  * `settings`     - Mappings and settings in json
+  """
+  def create(settings, index_id) do
+    Logger.debug "[Index] Create index with settings: #{settings}"
+    Funnel.Es.create(settings, index_id) |> respond
+  end
+
+  @doc """
   Delete an index.
 
   * `index_id` - Index's id

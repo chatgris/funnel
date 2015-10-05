@@ -5,18 +5,18 @@ defmodule EsTest do
   import Funnel.Es.Asserts
 
   test "returns a 201 on query creation" do
-    body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')
+    body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', "funnel")
     Funnel.Es.unregister("funnel", "token", body["query_id"])
   end
 
   test "update a query creation" do
-    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')["query_id"]
+    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', "funnel")["query_id"]
     assert_query_update('{"query" : {"term" : {"field1" : "value2"}}}', uuid)
     Funnel.Es.unregister("funnel", "token", uuid)
   end
 
   test "returns a body on query creation" do
-    body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')
+    body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', "funnel")
     assert byte_size(body["query_id"]) == 32
     assert body["index_id"] == "funnel"
     Funnel.Es.unregister("funnel", "token", body["query_id"])
@@ -65,13 +65,15 @@ defmodule EsTest do
   end
 
   test "find several queries based on token" do
-    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')["query_id"]
-    uuid2 = assert_query_creation('{"query" : {"term" : {"field1" : "value2"}}}')["query_id"]
+    Funnel.Es.Asserts.create_index("multiple_index")
     Funnel.Es.refresh
-    response = assert_query_find
+    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', "multiple_index", "multiple_token")["query_id"]
+    uuid2 = assert_query_creation('{"query" : {"term" : {"field1" : "value2"}}}', "multiple_index", "multiple_token")["query_id"]
+    Funnel.Es.refresh
+    response = assert_query_find("*", "multiple_token")
     assert Enum.count(response) == 2
-    Funnel.Es.unregister("funnel", "token", uuid)
-    Funnel.Es.unregister("funnel", "token", uuid2)
+    Funnel.Es.unregister("multiple_index", "multiple_token", uuid)
+    Funnel.Es.unregister("multiple_index", "multiple_token", uuid2)
   end
 
   test "find several queries based on different index" do

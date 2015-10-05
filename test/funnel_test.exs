@@ -2,16 +2,16 @@ defmodule FunnelTest do
   use Funnel.TestCase
 
   def create_index do
-    settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"field1" : { "type" : "string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary
+    settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"message" : { "type" : "string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary
     Funnel.Index.create(settings)
   end
 
-  def assert_create_query do
+  def assert_create_query(token \\ "token") do
     {:ok, _status_code, body} = create_index
     index_id = body["index_id"]
     query = '{"query" : {"match" : {"message" : "elasticsearch"}}}' |> IO.iodata_to_binary
 
-    {:ok, status_code, body} = Funnel.Query.create(index_id, "token", query)
+    {:ok, status_code, body} = Funnel.Query.create(index_id, token, query)
     query_id = body["query_id"]
     assert status_code == 201
     assert body != nil
@@ -71,12 +71,12 @@ defmodule FunnelTest do
   end
 
   test "find a query from a token" do
-    {index_id, query_id} = assert_create_query
+    {index_id, query_id} = assert_create_query("super_mega_tok")
     Funnel.Es.refresh
-    {:ok, status_code, body} = Funnel.Query.find("token")
+    {:ok, status_code, body} = Funnel.Query.find("super_mega_tok")
     assert status_code == 200
     assert Enum.count(body) == 1
-    Funnel.Query.destroy(index_id, "token", query_id)
+    Funnel.Query.destroy(index_id, "super_mega_tok", query_id)
     Funnel.Es.destroy(index_id)
   end
 

@@ -32,6 +32,7 @@ defmodule Funnel.Transistor do
   """
   def notify(token, id, response) do
     case Process.whereis(extract_name(token)) do
+      nil -> IO.inspect("Wrong token")
       pid -> GenServer.cast(pid, {:notify, id, response})
     end
   end
