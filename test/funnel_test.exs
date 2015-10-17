@@ -1,21 +1,10 @@
 defmodule FunnelTest do
-  use Funnel.TestCase
+  use Funnel.TestCase, async: true
+  import Funnel.Es.Asserts
 
-  def create_index do
-    settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"message" : { "type" : "string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary
-    Funnel.Index.create(settings)
-  end
-
-  def assert_create_query(token \\ "token") do
-    {:ok, _status_code, body} = create_index
-    index_id = body["index_id"]
-    query = '{"query" : {"match" : {"message" : "elasticsearch"}}}' |> IO.iodata_to_binary
-
-    {:ok, status_code, body} = Funnel.Query.create(index_id, token, query)
-    query_id = body["query_id"]
-    assert status_code == 201
-    assert body != nil
-    {index_id, query_id}
+  def query do
+    '{"query" : {"match" : {"message" : "elasticsearch"}}}'
+      |> IO.iodata_to_binary
   end
 
   test "register a transport" do
@@ -31,63 +20,74 @@ defmodule FunnelTest do
   end
 
   test "create an index with settings" do
-    {:ok, _status_code, body} = create_index
-    index_id = body["index_id"]
-    assert byte_size(index_id) == 32
-    Funnel.Es.destroy(index_id)
+    within_index do
+      assert byte_size(index_id) == 32
+    end
   end
 
   test "delete an index" do
-    {:ok, _status_code, body} = create_index
-    index_id = body["index_id"]
-    Funnel.Es.refresh
-    {:ok, status_code, body} = Funnel.Index.destroy(index_id)
-    assert status_code == 200
-    assert body != nil
+    within_index do
+      Funnel.Es.refresh
+      {:ok, status_code, body} = Funnel.Index.destroy(index_id)
+      assert status_code == 200
+      assert body != nil
+    end
   end
 
   test "create a query" do
-    {index_id, query_id} = assert_create_query
-    Funnel.Query.destroy(index_id, "token", query_id)
-    Funnel.Es.destroy(index_id)
+    within_index do
+      assert_query_creation(query, index_id)
+    end
   end
 
   test "update a query" do
-    query = '{"query" : {"match" : {"message" : "funnel"}}}' |> IO.iodata_to_binary
-    {index_id, query_id} = assert_create_query
-    {:ok, status_code, body} = Funnel.Query.update(index_id, "token", query_id, query)
-    assert status_code == 200
-    assert body != nil
-    Funnel.Query.destroy(index_id, "token", query_id)
-    Funnel.Es.destroy(index_id)
+    new_body = '{"query" : {"match" : {"message" : "funnel"}}}'
+      |> IO.iodata_to_binary
+
+    within_index do
+      query_id = assert_query_creation(query, index_id)["query_id"]
+
+      {:ok, status_code, body} = Funnel.Query.update(index_id, "token", query_id, query)
+      assert status_code == 200
+      assert body != nil
+      Funnel.Query.destroy(index_id, "token", query_id)
+    end
   end
 
   test "destroy a query" do
-    {index_id, query_id} = assert_create_query
-    {:ok, status_code, body} = Funnel.Query.destroy(index_id, "token", query_id)
-    assert status_code == 200
-    assert body != nil
-    Funnel.Es.destroy(index_id)
+    within_index do
+      query_id = assert_query_creation(query, index_id)["query_id"]
+      {:ok, status_code, body} = Funnel.Query.destroy(index_id, "token", query_id)
+      assert status_code == 200
+      assert body != nil
+    end
   end
 
   test "find a query from a token" do
-    {index_id, query_id} = assert_create_query("super_mega_tok")
-    Funnel.Es.refresh
-    {:ok, status_code, body} = Funnel.Query.find("super_mega_tok")
-    assert status_code == 200
-    assert Enum.count(body) == 1
-    Funnel.Query.destroy(index_id, "super_mega_tok", query_id)
-    Funnel.Es.destroy(index_id)
+    token = "super_mega_tok"
+
+    within_index do
+      query_id = assert_query_creation(query, index_id, token)["query_id"]
+      Funnel.Es.refresh
+      {:ok, status_code, body} = Funnel.Query.find(token)
+      assert status_code == 200
+      assert Enum.count(body) == 1
+      Funnel.Query.destroy(index_id, token, query_id)
+    end
   end
 
   test "find a query from a token and index_id" do
-    {index_id, query_id} = assert_create_query
-    Funnel.Es.refresh
-    {:ok, status_code, body} = Funnel.Query.find("token", %{index_id: index_id})
-    assert status_code == 200
-    assert Enum.count(body) == 1
-    Funnel.Query.destroy(index_id, "token", query_id)
-    Funnel.Es.destroy(index_id)
+    token = "super_mega_token"
+
+    within_index do
+      query_id = assert_query_creation(query, index_id, token)["query_id"]
+      Funnel.Es.refresh
+      {:ok, status_code, body} = Funnel.Query.find(token)
+      {:ok, status_code, body} = Funnel.Query.find(token, %{index_id: index_id})
+      assert status_code == 200
+      assert Enum.count(body) == 1
+      Funnel.Query.destroy(index_id, token, query_id)
+    end
   end
 
   test "submit a message to the percolator" do

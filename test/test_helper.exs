@@ -19,6 +19,20 @@ end
 defmodule Funnel.Es.Asserts do
   import ExUnit.Assertions, only: [assert: 1, assert: 2]
 
+  defmacro within_index(do: block) do
+    index_id = Funnel.Uuid.generate
+    settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"message" : { "type" : "string", "index" : "not_analyzed" },"field1" : { "type" : "string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary
+
+    quote do
+      var!(index_id) = unquote(index_id)
+      Funnel.Index.create(unquote(settings), unquote(index_id))
+
+      unquote(block)
+
+      Funnel.Es.destroy(unquote(index_id))
+    end
+  end
+
   def create_index(index_id \\ "funnel") do
     Funnel.Es.destroy(index_id)
     settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"message" : { "type" : "string", "index" : "not_analyzed" },"field1" : { "type" : "string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary

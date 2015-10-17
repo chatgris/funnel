@@ -1,5 +1,5 @@
 defmodule Funnel.Transistor.CacheTest do
-  use Funnel.TestCase
+  use Funnel.TestCase, async: true
   alias Funnel.Transistor.Cache
 
   defp fill_cache(pid) do
