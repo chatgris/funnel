@@ -1,0 +1,16 @@
+elasticsearch:
+  image: elasticsearch
+
+dev:
+  dockerfile: Dockerfile.dev
+  build: .
+  command: mix help
+  links:
+    - elasticsearch
+  volumes:
+    - .:/code
+    - .hex:/root/.hex
+    - .mix:/root/.mix
+  environment:
+    - MIX_ENV=test
+    - ELASTICSEARCH=http://elasticsearch:9200

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+export COMPOSE_FILE=docker-compose-dev.yml
+
+echo "Install deps"
+docker-compose run --rm dev mix deps.get
+
+echo "Compile deps"
+docker-compose run --rm dev mix deps.compile
+
+echo "Starting application"
+docker-compose up -d

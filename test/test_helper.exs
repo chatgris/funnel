@@ -19,8 +19,29 @@ end
 defmodule Funnel.Es.Asserts do
   import ExUnit.Assertions, only: [assert: 1, assert: 2]
 
-  def assert_query_creation(query, index \\ "funnel", token \\ "token") do
-    {status, response} = Funnel.Es.register(index, token, query)
+  defmacro within_index(do: block) do
+    index_id = Funnel.Uuid.generate
+    settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"message" : { "type" : "string", "index" : "not_analyzed" },"field1" : { "type" : "string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary
+
+    quote do
+      var!(index_id) = unquote(index_id)
+      Funnel.Index.create(unquote(settings), unquote(index_id))
+
+      unquote(block)
+
+      Funnel.Es.destroy(unquote(index_id))
+    end
+  end
+
+  def create_index(index_id \\ "funnel") do
+    Funnel.Es.destroy(index_id)
+    settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"message" : { "type" : "string", "index" : "not_analyzed" },"field1" : { "type" : "string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary
+    Funnel.Index.create(settings, index_id)
+  end
+
+  def assert_query_creation(query, index_id \\ "funnel", token \\ "token") do
+    Funnel.Es.refresh
+    {status, response} = Funnel.Es.register(index_id, token, query)
     {:ok, body} = Poison.decode response
     assert status == 201
     body
@@ -33,16 +54,9 @@ defmodule Funnel.Es.Asserts do
     body
   end
 
-  def assert_query_find(index) do
+  def assert_query_find(index, token \\ "token") do
     search_query = %{index_id: index}
-    {status, response} = Funnel.Es.find("token", search_query)
-    {:ok, response} = Poison.decode response
-    assert status == 200
-    response
-  end
-
-  def assert_query_find do
-    {status, response} = Funnel.Es.find("token")
+    {status, response} = Funnel.Es.find(token, search_query)
     {:ok, response} = Poison.decode response
     assert status == 200
     response

@@ -1,0 +1,9 @@
+FROM msaraiva/elixir-dev
+
+ENV APP_ROOT /code
+
+WORKDIR ${APP_ROOT}
+
+COPY . ${APP_ROOT}
+
+CMD ["mix"]

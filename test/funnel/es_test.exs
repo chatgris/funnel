@@ -1,25 +1,30 @@
 defmodule EsTest do
-  use Funnel.TestCase
+  use Funnel.TestCase, async: true
 
   Funnel.Es.create
   import Funnel.Es.Asserts
 
   test "returns a 201 on query creation" do
-    body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')
-    Funnel.Es.unregister("funnel", "token", body["query_id"])
+    within_index do
+      body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', index_id)
+      Funnel.Es.unregister(index_id, "token", body["query_id"])
+    end
   end
 
   test "update a query creation" do
-    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')["query_id"]
-    assert_query_update('{"query" : {"term" : {"field1" : "value2"}}}', uuid)
-    Funnel.Es.unregister("funnel", "token", uuid)
+    within_index do
+      uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', index_id)["query_id"]
+      assert_query_update('{"query" : {"term" : {"field1" : "value2"}}}', uuid, index_id)
+      Funnel.Es.unregister(index_id, "token", uuid)
+    end
   end
 
   test "returns a body on query creation" do
-    body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')
-    assert byte_size(body["query_id"]) == 32
-    assert body["index_id"] == "funnel"
-    Funnel.Es.unregister("funnel", "token", body["query_id"])
+    within_index do
+      body = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', index_id)
+      assert byte_size(body["query_id"]) == 32
+      Funnel.Es.unregister(index_id, "token", body["query_id"])
+    end
   end
 
   test "returns a 400 on bad payload" do
@@ -28,12 +33,14 @@ defmodule EsTest do
   end
 
   test "returns queries from percolator" do
-    uuid = assert_query_creation('{"query" : {"match" : {"message" : "elasticsearch"}}}')["query_id"]
-    message = '{"message" : "this new elasticsearch percolator feature is nice, borat style"}' |> IO.iodata_to_binary
-    Funnel.Es.refresh
-    Funnel.Es.percolate("funnel", message)
-      |> Enum.each(fn(match) -> assert_percolate(match, uuid) end)
-    Funnel.Es.unregister("funnel", "token", uuid)
+    within_index do
+      uuid = assert_query_creation('{"query" : {"match" : {"message" : "elasticsearch"}}}', index_id)["query_id"]
+      message = '{"message" : "this new elasticsearch percolator feature is nice, borat style"}' |> IO.iodata_to_binary
+      Funnel.Es.refresh
+      Funnel.Es.percolate(index_id, message)
+        |> Enum.each(fn(match) -> assert_percolate(match, uuid) end)
+      Funnel.Es.unregister(index_id, "token", uuid)
+    end
   end
 
   test "returns empty from percolator on non match" do
@@ -51,38 +58,29 @@ defmodule EsTest do
   end
 
   test "find a query based on token" do
-    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')["query_id"]
-    Funnel.Es.refresh
-    search_query = %{query_id: uuid}
-    {status, response} = Funnel.Es.find("token", search_query)
-    {:ok, response} = Poison.decode response
-    assert status == 200
-    assert Enum.count(response) == 1
-    item = Enum.at(response, 0)
-    assert item["query_id"] == uuid
-    assert item["index_id"] == "funnel"
-    Funnel.Es.unregister("funnel", "token", uuid)
+    within_index do
+      uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', index_id)["query_id"]
+      Funnel.Es.refresh
+      search_query = %{query_id: uuid}
+      {status, response} = Funnel.Es.find("token", search_query)
+      {:ok, response} = Poison.decode response
+      assert status == 200
+      assert Enum.count(response) == 1
+      item = Enum.at(response, 0)
+      assert item["query_id"] == uuid
+      Funnel.Es.unregister(index_id, "token", uuid)
+    end
   end
 
   test "find several queries based on token" do
-    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}')["query_id"]
-    uuid2 = assert_query_creation('{"query" : {"term" : {"field1" : "value2"}}}')["query_id"]
+    Funnel.Es.Asserts.create_index("multiple_index")
     Funnel.Es.refresh
-    response = assert_query_find
+    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', "multiple_index", "multiple_token")["query_id"]
+    uuid2 = assert_query_creation('{"query" : {"term" : {"field1" : "value2"}}}', "multiple_index", "multiple_token")["query_id"]
+    Funnel.Es.refresh
+    response = assert_query_find("*", "multiple_token")
     assert Enum.count(response) == 2
-    Funnel.Es.unregister("funnel", "token", uuid)
-    Funnel.Es.unregister("funnel", "token", uuid2)
-  end
-
-  test "find several queries based on different index" do
-    uuid = assert_query_creation('{"query" : {"term" : {"field1" : "value1"}}}', "index1")["query_id"]
-    uuid2 = assert_query_creation('{"query" : {"term" : {"field1" : "value2"}}}', "index2")["query_id"]
-    Funnel.Es.refresh
-    response = assert_query_find("index1")
-    assert Enum.count(response) == 1
-    response = assert_query_find("index2")
-    assert Enum.count(response) == 1
-    Funnel.Es.unregister("index1", "token", uuid)
-    Funnel.Es.unregister("index2", "token", uuid2)
+    Funnel.Es.unregister("multiple_index", "multiple_token", uuid)
+    Funnel.Es.unregister("multiple_index", "multiple_token", uuid2)
   end
 end
