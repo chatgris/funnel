@@ -1,9 +1,16 @@
-FROM msaraiva/elixir-dev
+FROM elixir:1.2
+
+ENV TINI_VERSION v0.9.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 
 ENV APP_ROOT /code
 
 WORKDIR ${APP_ROOT}
 
-COPY . ${APP_ROOT}
+VOLUME ["${APP_ROOT}"]
+
+RUN mix local.hex --force
 
 CMD ["mix"]
