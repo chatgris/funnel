@@ -21,7 +21,7 @@ defmodule Funnel.Es.Asserts do
 
   defmacro within_index(do: block) do
     index_id = Funnel.Uuid.generate
-    settings = '{"settings" : {"number_of_shards" : 1},"mappings" : {"type1" : {"_source" : { "enabled" : false },"properties" : {"message" : { "type" : "string", "index" : "not_analyzed" },"field1" : { "type" : "string", "index" : "not_analyzed" }}}}}' |> IO.iodata_to_binary
+    settings = '{"mappings": {"messages": {"properties": {"message": {"type": "string"},"field1": {"type": "string"}}}}}' |> IO.iodata_to_binary
 
     quote do
       var!(index_id) = unquote(index_id)

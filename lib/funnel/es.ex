@@ -25,7 +25,7 @@ defmodule Funnel.Es do
   """
   def percolate(index_id, body) do
     {:ok, body} = format_document(body)
-    {:ok, percolation} = post("/#{namespace(index_id)}/message/_percolate", body)
+    {:ok, percolation} = post("/#{namespace(index_id)}/messages/_percolate", body)
     {:ok, body} = Poison.decode percolation.body
     body["matches"] || []
   end
