@@ -30,7 +30,7 @@ defmodule Funnel do
   * `last_id`      - the last id received in the transport
   """
   def register(transport, token, last_id) do
-    {:ok, transistor} = Funnel.Transistors.add token
+    {:ok, _transistor} = Funnel.Transistors.add token
     Logger.debug "[Register] Token: #{token}"
     Funnel.Transistor.add(transport, token, last_id)
     {:ok, token}
