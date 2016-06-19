@@ -9,6 +9,7 @@ defmodule Funnel.Mixfile do
       elixir: "~> 1.2.0",
       description: description,
       package: package,
+      consolidate_protocols: Mix.env == :prod,
       deps: deps ]
   end
 
