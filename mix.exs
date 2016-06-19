@@ -6,7 +6,7 @@ defmodule Funnel.Mixfile do
       version: "0.4.1",
       compilers: [:elixir, :app],
       compile_path: "tmp/#{Mix.env}/funnel/ebin",
-      elixir: "~> 1.0.0",
+      elixir: "~> 1.2.0",
       description: description,
       package: package,
       deps: deps ]
