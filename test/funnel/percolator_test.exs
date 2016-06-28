@@ -53,7 +53,7 @@ defmodule Funnel.PercolatorTest do
 
       Funnel.percolate(index_id, messages)
 
-      assert_receive({:chunk, %{id: _, item: item}})
+      assert_receive({:chunk, %{id: _, item: _}})
       assert_receive({:chunk, %{id: _, item: item}})
       refute_receive({:chunk, %{id: _, item: _}})
 

@@ -20,11 +20,11 @@ defmodule Funnel.Mixfile do
   end
 
   defp deps do
-    [ { :httpoison,   "~> 0.8" },
-      { :poison,      "~> 2.1" },
-      { :uuid,        "~> 1.1" },
-      { :ex_doc,      "~> 0.5", only: :dev },
-      { :poolboy,     "~> 1.5" }
+    [ { :httpoison,      "~> 0.9" },
+      { :poison,         "~> 2.1" },
+      { :uuid,           "~> 1.1" },
+      { :ex_doc,         "~> 0.5", only: :dev },
+      { :poolboy,        "~> 1.5" }
     ]
   end
 
