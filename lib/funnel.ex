@@ -4,7 +4,7 @@ defmodule Funnel do
 
   @doc """
   The application callback used to start this
-  application and its Dynamos.
+  application.
   """
   def start(_type, _args) do
     Funnel.Supervisor.start_link

@@ -41,9 +41,6 @@ defmodule FunnelTest do
   end
 
   test "update a query" do
-    new_body = '{"query" : {"match" : {"message" : "funnel"}}}'
-      |> IO.iodata_to_binary
-
     within_index do
       query_id = assert_query_creation(query, index_id)["query_id"]
 
@@ -82,7 +79,7 @@ defmodule FunnelTest do
     within_index do
       query_id = assert_query_creation(query, index_id, token)["query_id"]
       Funnel.Es.refresh
-      {:ok, status_code, body} = Funnel.Query.find(token)
+      {:ok, _status_code, _body} = Funnel.Query.find(token)
       {:ok, status_code, body} = Funnel.Query.find(token, %{index_id: index_id})
       assert status_code == 200
       assert Enum.count(body) == 1
